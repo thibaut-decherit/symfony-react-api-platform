@@ -49,6 +49,11 @@ class Invoice
     private $customer;
 
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $chrono;
+
+    /**
      * @return int|null
      */
     public function getId(): ?int
@@ -128,6 +133,18 @@ class Invoice
     public function setCustomer(?Customer $customer): self
     {
         $this->customer = $customer;
+
+        return $this;
+    }
+
+    public function getChrono(): ?int
+    {
+        return $this->chrono;
+    }
+
+    public function setChrono(int $chrono): self
+    {
+        $this->chrono = $chrono;
 
         return $this;
     }

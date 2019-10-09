@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  *     attributes={
  *          "pagination_enabled"=true,
  *          "pagination_items_per_page"=20,
+ *          "order"={"amount"="desc"},
  *     }
  * )
  */

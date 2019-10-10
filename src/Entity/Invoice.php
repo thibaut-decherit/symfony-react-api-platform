@@ -20,6 +20,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *     },
  *     normalizationContext={
  *          "groups"={"invoice_read"}
+ *     },
+ *     subresourceOperations={
+ *          "api_customers_invoices_get_subresource"={
+ *              "normalization_context"={
+ *                  "groups"={"invoice_subresource_read"}
+ *              }
+ *          }
  *     }
  * )
  * @ApiFilter(SearchFilter::class, properties={"customer.firstName": "start", "customer.lastName": "start"})
@@ -33,7 +40,7 @@ class Invoice
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"invoice_read", "customer_read"})
+     * @Groups({"invoice_read", "customer_read", "invoice_subresource_read"})
      */
     private $id;
 
@@ -41,7 +48,7 @@ class Invoice
      * @var float
      *
      * @ORM\Column(type="float")
-     * @Groups({"invoice_read", "customer_read"})
+     * @Groups({"invoice_read", "customer_read", "invoice_subresource_read"})
      */
     private $amount;
 
@@ -49,7 +56,7 @@ class Invoice
      * @var DateTime
      *
      * @ORM\Column(type="datetime")
-     * @Groups({"invoice_read", "customer_read"})
+     * @Groups({"invoice_read", "customer_read", "invoice_subresource_read"})
      */
     private $sentAt;
 
@@ -57,7 +64,7 @@ class Invoice
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"invoice_read", "customer_read"})
+     * @Groups({"invoice_read", "customer_read", "invoice_subresource_read"})
      */
     private $status;
 
@@ -72,12 +79,12 @@ class Invoice
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"invoice_read", "customer_read"})
+     * @Groups({"invoice_read", "customer_read", "invoice_subresource_read"})
      */
     private $chrono;
 
     /**
-     * @Groups({"invoice_read"})
+     * @Groups({"invoice_read", "invoice_subresource_read"})
      * @return User
      */
     public function getUser(): User

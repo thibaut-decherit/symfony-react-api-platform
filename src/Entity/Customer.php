@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
  * @ApiResource(
  *     normalizationContext={
- *          "groups"={"customer_read"}
+ *          "groups"={"customer_get"}
  *     }
  * )
  * @ApiFilter(SearchFilter::class, properties={"firstName": "start", "lastName": "start", "company": "start"})
@@ -30,7 +30,7 @@ class Customer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"customer_read", "invoice_read"})
+     * @Groups({"customer_get", "invoice_get"})
      */
     private $id;
 
@@ -38,7 +38,7 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_read", "invoice_read"})
+     * @Groups({"customer_get", "invoice_get"})
      */
     private $firstName;
 
@@ -46,7 +46,7 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_read", "invoice_read"})
+     * @Groups({"customer_get", "invoice_get"})
      */
     private $lastName;
 
@@ -54,7 +54,7 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_read", "invoice_read"})
+     * @Groups({"customer_get", "invoice_get"})
      */
     private $email;
 
@@ -62,7 +62,7 @@ class Customer
      * @var string|null
      *
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"customer_read", "invoice_read"})
+     * @Groups({"customer_get", "invoice_get"})
      */
     private $company;
 
@@ -70,7 +70,7 @@ class Customer
      * @var Collection|Invoice[]
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="customer")
-     * @Groups({"customer_read"})
+     * @Groups({"customer_get"})
      * @ApiSubresource()
      */
     private $invoices;
@@ -79,7 +79,7 @@ class Customer
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="customers")
-     * @Groups({"customer_read"})
+     * @Groups({"customer_get"})
      */
     private $user;
 
@@ -89,7 +89,7 @@ class Customer
     }
 
     /**
-     * @Groups({"customer_read"})
+     * @Groups({"customer_get"})
      * @return float
      */
     public function getPaidAmount(): float
@@ -107,7 +107,7 @@ class Customer
     }
 
     /**
-     * @Groups({"customer_read"})
+     * @Groups({"customer_get"})
      * @return float
      */
     public function getTotalAmount(): float
@@ -121,7 +121,7 @@ class Customer
     }
 
     /**
-     * @Groups({"customer_read"})
+     * @Groups({"customer_get"})
      * @return float
      */
     public function getUnpaidAmount(): float

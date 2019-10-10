@@ -19,12 +19,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
  *          "order"={"sentAt"="desc"},
  *     },
  *     normalizationContext={
- *          "groups"={"invoice_read"}
+ *          "groups"={"invoice_get"}
  *     },
  *     subresourceOperations={
  *          "api_customers_invoices_get_subresource"={
  *              "normalization_context"={
- *                  "groups"={"invoice_subresource_read"}
+ *                  "groups"={"invoice_get_as_subresource"}
  *              }
  *          }
  *     }
@@ -40,7 +40,7 @@ class Invoice
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"invoice_read", "customer_read", "invoice_subresource_read"})
+     * @Groups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
      */
     private $id;
 
@@ -48,7 +48,7 @@ class Invoice
      * @var float
      *
      * @ORM\Column(type="float")
-     * @Groups({"invoice_read", "customer_read", "invoice_subresource_read"})
+     * @Groups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
      */
     private $amount;
 
@@ -56,7 +56,7 @@ class Invoice
      * @var DateTime
      *
      * @ORM\Column(type="datetime")
-     * @Groups({"invoice_read", "customer_read", "invoice_subresource_read"})
+     * @Groups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
      */
     private $sentAt;
 
@@ -64,7 +64,7 @@ class Invoice
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"invoice_read", "customer_read", "invoice_subresource_read"})
+     * @Groups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
      */
     private $status;
 
@@ -73,18 +73,18 @@ class Invoice
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="invoices")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"invoice_read"})
+     * @Groups({"invoice_get", "invoice_get_as_subresource"})
      */
     private $customer;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"invoice_read", "customer_read", "invoice_subresource_read"})
+     * @Groups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
      */
     private $chrono;
 
     /**
-     * @Groups({"invoice_read", "invoice_subresource_read"})
+     * @Groups({"invoice_get", "invoice_get_as_subresource"})
      * @return User
      */
     public function getUser(): User

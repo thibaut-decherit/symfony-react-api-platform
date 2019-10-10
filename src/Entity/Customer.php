@@ -9,10 +9,15 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
- * @ApiResource()
+ * @ApiResource(
+ *     normalizationContext={
+ *          "groups"={"customer_read"}
+ *     }
+ * )
  * @ApiFilter(SearchFilter::class, properties={"firstName": "start", "lastName": "start", "company": "start"})
  * @ApiFilter(OrderFilter::class)
  */
@@ -24,6 +29,7 @@ class Customer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
+     * @Groups({"customer_read"})
      */
     private $id;
 
@@ -31,6 +37,7 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customer_read"})
      */
     private $firstName;
 
@@ -38,6 +45,7 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customer_read"})
      */
     private $lastName;
 
@@ -45,6 +53,7 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customer_read"})
      */
     private $email;
 
@@ -52,6 +61,7 @@ class Customer
      * @var string|null
      *
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"customer_read"})
      */
     private $company;
 
@@ -59,6 +69,7 @@ class Customer
      * @var Collection|Invoice[]
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="customer")
+     * @Groups({"customer_read"})
      */
     private $invoices;
 
@@ -66,6 +77,7 @@ class Customer
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="customers")
+     * @Groups({"customer_read"})
      */
     private $user;
 

@@ -77,6 +77,15 @@ class Invoice
     private $chrono;
 
     /**
+     * @Groups({"invoice_read"})
+     * @return User
+     */
+    public function getUser(): User
+    {
+        return $this->getCustomer()->getUser();
+    }
+
+    /**
      * @return int|null
      */
     public function getId(): ?int

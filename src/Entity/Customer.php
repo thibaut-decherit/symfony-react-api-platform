@@ -87,6 +87,56 @@ class Customer
     }
 
     /**
+     * @Groups({"customer_read"})
+     * @return float
+     */
+    public function getPaidAmount(): float
+    {
+        return array_reduce(
+            $this->invoices->toArray(),
+            function (float $total, Invoice $invoice): float {
+                if ($invoice->getStatus() === 'PAID') {
+                    $total += $invoice->getAmount();
+                }
+
+                return $total;
+            }, 0
+        );
+    }
+
+    /**
+     * @Groups({"customer_read"})
+     * @return float
+     */
+    public function getTotalAmount(): float
+    {
+        return array_reduce(
+            $this->invoices->toArray(),
+            function (float $total, Invoice $invoice): float {
+                return $total + $invoice->getAmount();
+            }, 0
+        );
+    }
+
+    /**
+     * @Groups({"customer_read"})
+     * @return float
+     */
+    public function getUnpaidAmount(): float
+    {
+        return array_reduce(
+            $this->invoices->toArray(),
+            function (float $total, Invoice $invoice): float {
+                if ($invoice->getStatus() === 'SENT') {
+                    $total += $invoice->getAmount();
+                }
+
+                return $total;
+            }, 0
+        );
+    }
+
+    /**
      * @return int|null
      */
     public function getId(): ?int

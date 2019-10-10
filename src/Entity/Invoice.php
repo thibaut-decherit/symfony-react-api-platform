@@ -33,7 +33,7 @@ class Invoice
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"invoice_read"})
+     * @Groups({"invoice_read", "customer_read"})
      */
     private $id;
 
@@ -41,7 +41,7 @@ class Invoice
      * @var float
      *
      * @ORM\Column(type="float")
-     * @Groups({"invoice_read"})
+     * @Groups({"invoice_read", "customer_read"})
      */
     private $amount;
 
@@ -49,7 +49,7 @@ class Invoice
      * @var DateTime
      *
      * @ORM\Column(type="datetime")
-     * @Groups({"invoice_read"})
+     * @Groups({"invoice_read", "customer_read"})
      */
     private $sentAt;
 
@@ -57,7 +57,7 @@ class Invoice
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"invoice_read"})
+     * @Groups({"invoice_read", "customer_read"})
      */
     private $status;
 
@@ -72,7 +72,7 @@ class Invoice
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"invoice_read"})
+     * @Groups({"invoice_read", "customer_read"})
      */
     private $chrono;
 

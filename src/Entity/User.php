@@ -21,7 +21,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"customer_read", "invoice_read"})
+     * @Groups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
      */
     private $id;
 
@@ -29,7 +29,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"customer_read", "invoice_read"})
+     * @Groups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
      */
     private $email;
 
@@ -51,7 +51,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_read", "invoice_read"})
+     * @Groups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
      */
     private $firstName;
 
@@ -59,7 +59,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_read", "invoice_read"})
+     * @Groups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
      */
     private $lastName;
 

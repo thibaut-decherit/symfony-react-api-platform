@@ -69,7 +69,7 @@ class Customer
     /**
      * @var Collection|Invoice[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="customer")
+     * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="customer", orphanRemoval=true)
      * @Groups({"customer_get"})
      * @ApiSubresource()
      */

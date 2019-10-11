@@ -66,7 +66,7 @@ class User implements UserInterface
     /**
      * @var Collection|Customer[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Customer", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Customer", mappedBy="user", orphanRemoval=true)
      */
     private $customers;
 

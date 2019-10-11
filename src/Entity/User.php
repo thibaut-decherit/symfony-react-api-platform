@@ -6,11 +6,14 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups as SerializerGroups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(fields="email", message="form_errors.user.unique_email")
  * @ApiResource()
  */
 class User implements UserInterface
@@ -30,6 +33,14 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", length=180, unique=true)
      * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @Assert\Email(message = "form_errors.user.valid_email")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "form_errors.global.min_length",
+     *      maxMessage = "form_errors.global.max_length",
+     * )
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $email;
 
@@ -52,6 +63,13 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", length=255)
      * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "form_errors.global.min_length",
+     *      maxMessage = "form_errors.global.max_length",
+     * )
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $firstName;
 
@@ -60,6 +78,13 @@ class User implements UserInterface
      *
      * @ORM\Column(type="string", length=255)
      * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "form_errors.global.min_length",
+     *      maxMessage = "form_errors.global.max_length",
+     * )
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $lastName;
 

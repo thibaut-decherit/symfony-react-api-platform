@@ -7,4 +7,5 @@ form_errors:
     not_blank: This field cannot be empty.
     valid_date: This date is not valid.
   user:
+    unique_email: This email is already used.
     valid_email: This email address is not valid.

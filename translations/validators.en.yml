@@ -1,0 +1,9 @@
+# Form errors
+
+form_errors:
+  global:
+    max_length: This field cannot be longer than {{ limit }} characters.
+    min_length: This field must contain at least {{ limit }} characters.
+    not_blank: This field cannot be empty.
+  user:
+    valid_email: This email address is not valid.

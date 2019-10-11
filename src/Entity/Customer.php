@@ -79,6 +79,7 @@ class Customer
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="customers")
+     * @ORM\JoinColumn(nullable=false)
      * @Groups({"customer_get"})
      */
     private $user;
@@ -261,12 +262,19 @@ class Customer
         return $this;
     }
 
+    /**
+     * @return User|null
+     */
     public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function setUser(User $user): self
     {
         $this->user = $user;
 

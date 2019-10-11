@@ -166,10 +166,10 @@ class Invoice
     }
 
     /**
-     * @param Customer|null $customer
+     * @param Customer $customer
      * @return $this
      */
-    public function setCustomer(?Customer $customer): self
+    public function setCustomer(Customer $customer): self
     {
         $this->customer = $customer;
 

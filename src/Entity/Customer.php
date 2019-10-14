@@ -10,7 +10,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Groups as SerializerGroups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
@@ -30,7 +31,7 @@ class Customer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"customer_get", "invoice_get"})
+     * @SerializerGroups({"customer_get", "invoice_get"})
      */
     private $id;
 
@@ -38,7 +39,14 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_get", "invoice_get"})
+     * @SerializerGroups({"customer_get", "invoice_get"})
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "form_errors.global.min_length",
+     *      maxMessage = "form_errors.global.max_length",
+     * )
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $firstName;
 
@@ -46,7 +54,14 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_get", "invoice_get"})
+     * @SerializerGroups({"customer_get", "invoice_get"})
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "form_errors.global.min_length",
+     *      maxMessage = "form_errors.global.max_length",
+     * )
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $lastName;
 
@@ -54,7 +69,15 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_get", "invoice_get"})
+     * @SerializerGroups({"customer_get", "invoice_get"})
+     * @Assert\Email(message = "form_errors.user.valid_email")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "form_errors.global.min_length",
+     *      maxMessage = "form_errors.global.max_length",
+     * )
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $email;
 
@@ -62,15 +85,21 @@ class Customer
      * @var string|null
      *
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"customer_get", "invoice_get"})
+     * @SerializerGroups({"customer_get", "invoice_get"})
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "form_errors.global.min_length",
+     *      maxMessage = "form_errors.global.max_length",
+     * )
      */
     private $company;
 
     /**
      * @var Collection|Invoice[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="customer")
-     * @Groups({"customer_get"})
+     * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="customer", orphanRemoval=true)
+     * @SerializerGroups({"customer_get"})
      * @ApiSubresource()
      */
     private $invoices;
@@ -79,7 +108,9 @@ class Customer
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="customers")
-     * @Groups({"customer_get"})
+     * @ORM\JoinColumn(nullable=false)
+     * @SerializerGroups({"customer_get"})
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $user;
 
@@ -89,7 +120,7 @@ class Customer
     }
 
     /**
-     * @Groups({"customer_get"})
+     * @SerializerGroups({"customer_get"})
      * @return float
      */
     public function getPaidAmount(): float
@@ -107,7 +138,7 @@ class Customer
     }
 
     /**
-     * @Groups({"customer_get"})
+     * @SerializerGroups({"customer_get"})
      * @return float
      */
     public function getTotalAmount(): float
@@ -121,7 +152,7 @@ class Customer
     }
 
     /**
-     * @Groups({"customer_get"})
+     * @SerializerGroups({"customer_get"})
      * @return float
      */
     public function getUnpaidAmount(): float
@@ -261,12 +292,19 @@ class Customer
         return $this;
     }
 
+    /**
+     * @return User|null
+     */
     public function getUser(): ?User
     {
         return $this->user;
     }
 
-    public function setUser(?User $user): self
+    /**
+     * @param User $user
+     * @return $this
+     */
+    public function setUser(User $user): self
     {
         $this->user = $user;
 

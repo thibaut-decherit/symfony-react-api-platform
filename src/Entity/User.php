@@ -6,11 +6,14 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Groups as SerializerGroups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
+ * @UniqueEntity(fields="email", message="form_errors.user.unique_email")
  * @ApiResource()
  */
 class User implements UserInterface
@@ -21,7 +24,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
      */
     private $id;
 
@@ -29,7 +32,15 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Groups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @Assert\Email(message = "form_errors.user.valid_email")
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "form_errors.global.min_length",
+     *      maxMessage = "form_errors.global.max_length",
+     * )
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $email;
 
@@ -51,7 +62,14 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "form_errors.global.min_length",
+     *      maxMessage = "form_errors.global.max_length",
+     * )
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $firstName;
 
@@ -59,14 +77,21 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 255,
+     *      minMessage = "form_errors.global.min_length",
+     *      maxMessage = "form_errors.global.max_length",
+     * )
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $lastName;
 
     /**
      * @var Collection|Customer[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\Customer", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="App\Entity\Customer", mappedBy="user", orphanRemoval=true)
      */
     private $customers;
 

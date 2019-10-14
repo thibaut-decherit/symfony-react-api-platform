@@ -8,7 +8,8 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Groups as SerializerGroups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\InvoiceRepository")
@@ -40,7 +41,7 @@ class Invoice
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @Groups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
      */
     private $id;
 
@@ -48,7 +49,9 @@ class Invoice
      * @var float
      *
      * @ORM\Column(type="float")
-     * @Groups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
+     * @Assert\PositiveOrZero()
      */
     private $amount;
 
@@ -56,7 +59,9 @@ class Invoice
      * @var DateTime
      *
      * @ORM\Column(type="datetime")
-     * @Groups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
+     * @Assert\DateTime(message="form_errors.global.valid_date")
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $sentAt;
 
@@ -64,7 +69,9 @@ class Invoice
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @Groups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
+     * @Assert\Choice({"SENT", "CANCELLED", "PAID"})
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $status;
 
@@ -73,18 +80,21 @@ class Invoice
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\Customer", inversedBy="invoices")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"invoice_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"invoice_get", "invoice_get_as_subresource"})
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $customer;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"invoice_get", "customer_get", "invoice_get_as_subresource"})
+     * @Assert\NotBlank(message="form_errors.global.not_blank")
+     * @Assert\Positive()
      */
     private $chrono;
 
     /**
-     * @Groups({"invoice_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"invoice_get", "invoice_get_as_subresource"})
      * @return User
      */
     public function getUser(): User
@@ -166,10 +176,10 @@ class Invoice
     }
 
     /**
-     * @param Customer|null $customer
+     * @param Customer $customer
      * @return $this
      */
-    public function setCustomer(?Customer $customer): self
+    public function setCustomer(Customer $customer): self
     {
         $this->customer = $customer;
 

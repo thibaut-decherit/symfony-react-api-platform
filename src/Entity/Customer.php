@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
  * @ApiResource(
  *     normalizationContext={
- *          "groups"={"customer_get"}
+ *          "groups"={"customer_read"}
  *     }
  * )
  * @ApiFilter(SearchFilter::class, properties={"firstName": "start", "lastName": "start", "company": "start"})
@@ -31,7 +31,7 @@ class Customer
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @SerializerGroups({"customer_get", "invoice_get"})
+     * @SerializerGroups({"customer_read", "invoice_read"})
      */
     private $id;
 
@@ -39,7 +39,7 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @SerializerGroups({"customer_get", "invoice_get"})
+     * @SerializerGroups({"customer_read", "invoice_read"})
      * @Assert\Length(
      *      min = 2,
      *      max = 255,
@@ -54,7 +54,7 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @SerializerGroups({"customer_get", "invoice_get"})
+     * @SerializerGroups({"customer_read", "invoice_read"})
      * @Assert\Length(
      *      min = 2,
      *      max = 255,
@@ -69,7 +69,7 @@ class Customer
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @SerializerGroups({"customer_get", "invoice_get"})
+     * @SerializerGroups({"customer_read", "invoice_read"})
      * @Assert\Email(message = "form_errors.user.valid_email")
      * @Assert\Length(
      *      min = 2,
@@ -85,7 +85,7 @@ class Customer
      * @var string|null
      *
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @SerializerGroups({"customer_get", "invoice_get"})
+     * @SerializerGroups({"customer_read", "invoice_read"})
      * @Assert\Length(
      *      min = 2,
      *      max = 255,
@@ -99,7 +99,7 @@ class Customer
      * @var Collection|Invoice[]
      *
      * @ORM\OneToMany(targetEntity="App\Entity\Invoice", mappedBy="customer", orphanRemoval=true)
-     * @SerializerGroups({"customer_get"})
+     * @SerializerGroups({"customer_read"})
      * @ApiSubresource()
      */
     private $invoices;
@@ -109,7 +109,7 @@ class Customer
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\User", inversedBy="customers")
      * @ORM\JoinColumn(nullable=false)
-     * @SerializerGroups({"customer_get"})
+     * @SerializerGroups({"customer_read"})
      * @Assert\NotBlank(message="form_errors.global.not_blank")
      */
     private $user;
@@ -120,7 +120,7 @@ class Customer
     }
 
     /**
-     * @SerializerGroups({"customer_get"})
+     * @SerializerGroups({"customer_read"})
      * @return float
      */
     public function getPaidAmount(): float
@@ -138,7 +138,7 @@ class Customer
     }
 
     /**
-     * @SerializerGroups({"customer_get"})
+     * @SerializerGroups({"customer_read"})
      * @return float
      */
     public function getTotalAmount(): float
@@ -152,7 +152,7 @@ class Customer
     }
 
     /**
-     * @SerializerGroups({"customer_get"})
+     * @SerializerGroups({"customer_read"})
      * @return float
      */
     public function getUnpaidAmount(): float

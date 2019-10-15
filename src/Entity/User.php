@@ -14,7 +14,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="form_errors.user.unique_email")
- * @ApiResource()
+ * @ApiResource(
+ *     normalizationContext={
+ *          "groups"={"user_read"}
+ *     }
+ * )
  */
 class User implements UserInterface
 {
@@ -24,7 +28,7 @@ class User implements UserInterface
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
-     * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"customer_read", "invoice_read", "invoice_read_as_subresource", "user_read"})
      */
     private $id;
 
@@ -32,7 +36,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", length=180, unique=true)
-     * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"customer_read", "invoice_read", "invoice_read_as_subresource", "user_read"})
      * @Assert\Email(message = "form_errors.user.valid_email")
      * @Assert\Length(
      *      min = 2,
@@ -62,7 +66,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"customer_read", "invoice_read", "invoice_read_as_subresource", "user_read"})
      * @Assert\Length(
      *      min = 2,
      *      max = 255,
@@ -77,7 +81,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(type="string", length=255)
-     * @SerializerGroups({"customer_get", "invoice_get", "invoice_get_as_subresource"})
+     * @SerializerGroups({"customer_read", "invoice_read", "invoice_read_as_subresource", "user_read"})
      * @Assert\Length(
      *      min = 2,
      *      max = 255,

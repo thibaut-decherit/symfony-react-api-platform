@@ -4,7 +4,11 @@ namespace App\EventSubscriber;
 
 use ApiPlatform\Core\EventListener\EventPriorities;
 use App\Entity\Customer;
+use App\Entity\Invoice;
 use App\Entity\User;
+use DateTime;
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -28,14 +32,25 @@ class KernelViewSubscriber implements EventSubscriberInterface
     private $security;
 
     /**
+     * @var ObjectManager
+     */
+    private $objectManager;
+
+    /**
      * KernelViewSubscriber constructor.
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param Security $security
+     * @param ObjectManager $objectManager
      */
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder, Security $security)
+    public function __construct(
+        UserPasswordEncoderInterface $passwordEncoder,
+        Security $security,
+        ObjectManager $objectManager
+    )
     {
         $this->passwordEncoder = $passwordEncoder;
         $this->security = $security;
+        $this->objectManager = $objectManager;
     }
 
     /**
@@ -47,6 +62,7 @@ class KernelViewSubscriber implements EventSubscriberInterface
         return [
             KernelEvents::VIEW => [
                 ['onCustomerPostSetUser', EventPriorities::PRE_VALIDATE],
+                ['onInvoicePost', EventPriorities::PRE_VALIDATE],
                 ['onUserPostHashPassword', EventPriorities::PRE_WRITE]
             ]
         ];
@@ -78,7 +94,38 @@ class KernelViewSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Hashes password of User before persistence in database.
+     * Sets chrono and sentAt of Invoice before persistence to database.
+     *
+     * @param ViewEvent $event
+     * @throws NonUniqueResultException
+     */
+    public function onInvoicePost(ViewEvent $event): void
+    {
+        $result = $event->getControllerResult();
+        $method = $event->getRequest()->getMethod();
+
+        if ($result instanceof Invoice === false || $method !== 'POST') {
+            return;
+        }
+
+        /**
+         * @var User $user
+         */
+        $user = $this->security->getUser();
+
+        $chrono = $this->objectManager->getRepository(Invoice::class)->getNextChrono($user);
+
+        /**
+         * @var Invoice $invoice
+         */
+        $invoice = $result;
+
+        $invoice->setChrono($chrono);
+        $invoice->setSentAt(new DateTime());
+    }
+
+    /**
+     * Hashes password of User before persistence to database.
      *
      * @param ViewEvent $event
      */

@@ -9,6 +9,7 @@ use App\Entity\User;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\NonUniqueResultException;
+use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -61,8 +62,9 @@ class KernelViewSubscriber implements EventSubscriberInterface
         // See https://api-platform.com/docs/core/events/#the-event-system for priorities.
         return [
             KernelEvents::VIEW => [
-                ['onCustomerPostSetUser', EventPriorities::PRE_VALIDATE],
-                ['onInvoicePost', EventPriorities::PRE_VALIDATE],
+                ['onCustomerPreValidateSetUser', EventPriorities::PRE_VALIDATE],
+                ['onInvoicePreValidate', EventPriorities::PRE_VALIDATE],
+                ['onInvoicePostWrite', EventPriorities::POST_WRITE],
                 ['onUserPostHashPassword', EventPriorities::PRE_WRITE]
             ]
         ];
@@ -71,7 +73,7 @@ class KernelViewSubscriber implements EventSubscriberInterface
     /**
      * @param ViewEvent $event
      */
-    public function onCustomerPostSetUser(ViewEvent $event): void
+    public function onCustomerPreValidateSetUser(ViewEvent $event): void
     {
         $result = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
@@ -94,12 +96,12 @@ class KernelViewSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Sets chrono and sentAt of Invoice before persistence to database.
+     * Sets chrono and sentAt of Invoice before model validation and persistence to database.
      *
      * @param ViewEvent $event
-     * @throws NonUniqueResultException
+     * @throws Exception
      */
-    public function onInvoicePost(ViewEvent $event): void
+    public function onInvoicePreValidate(ViewEvent $event): void
     {
         $result = $event->getControllerResult();
         $method = $event->getRequest()->getMethod();
@@ -109,19 +111,38 @@ class KernelViewSubscriber implements EventSubscriberInterface
         }
 
         /**
-         * @var User $user
-         */
-        $user = $this->security->getUser();
-
-        $chrono = $this->objectManager->getRepository(Invoice::class)->getNextChrono($user);
-
-        /**
          * @var Invoice $invoice
          */
         $invoice = $result;
 
-        $invoice->setChrono($chrono);
+        $invoice->setChrono(null);
         $invoice->setSentAt(new DateTime());
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    public function onInvoicePostWrite(): void
+    {
+        /**
+         * @var User $user
+         */
+        $user = $this->security->getUser();
+
+        $chrono = $this->objectManager->getRepository(Invoice::class)->getLastChrono($user);
+
+        $invoices = $this->objectManager->getRepository(Invoice::class)->getRecentlyAddedInvoices($user);
+
+        foreach ($invoices as $invoice) {
+            $chrono++;
+
+            /**
+             * @var $invoice Invoice
+             */
+            $invoice->setChrono($chrono);
+        }
+
+        $this->objectManager->flush();
     }
 
     /**

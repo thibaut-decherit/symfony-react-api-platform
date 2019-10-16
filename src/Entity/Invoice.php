@@ -86,10 +86,10 @@ class Invoice
     private $customer;
 
     /**
-     * @ORM\Column(type="integer")
+     * @var int|null
+     *
+     * @ORM\Column(type="integer", nullable=true)
      * @SerializerGroups({"invoice_read", "customer_read", "invoice_read_as_subresource"})
-     * @Assert\NotBlank(message="form_errors.global.not_blank")
-     * @Assert\Positive()
      */
     private $chrono;
 
@@ -186,12 +186,19 @@ class Invoice
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getChrono(): ?int
     {
         return $this->chrono;
     }
 
-    public function setChrono(int $chrono): self
+    /**
+     * @param int|null $chrono
+     * @return $this
+     */
+    public function setChrono(?int $chrono): self
     {
         $this->chrono = $chrono;
 

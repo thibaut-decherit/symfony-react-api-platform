@@ -23,20 +23,36 @@ class InvoiceRepository extends ServiceEntityRepository
 
     /**
      * @param User $user
-     * @return int|mixed
+     * @return int|null
      * @throws NonUniqueResultException
      */
-    public function getNextChrono(User $user)
+    public function getLastChrono(User $user): ?int
     {
         return $this
-                ->createQueryBuilder('i')
-                ->select('i.chrono')
-                ->join('i.customer', 'c')
-                ->where('c.user = :user')
-                ->setParameter('user', $user)
-                ->orderBy('i.chrono', 'DESC')
-                ->setMaxResults(1)
-                ->getQuery()
-                ->getSingleScalarResult() + 1;
+            ->createQueryBuilder('i')
+            ->select('i.chrono')
+            ->join('i.customer', 'c')
+            ->where('c.user = :user')
+            ->setParameter('user', $user)
+            ->orderBy('i.chrono', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function getRecentlyAddedInvoices(User $user): array
+    {
+        return $this
+            ->createQueryBuilder('i')
+            ->join('i.customer', 'c')
+            ->where('c.user = :user')
+            ->andWhere('i.chrono IS NULL')
+            ->setParameter('user', $user)
+            ->getQuery()
+            ->execute();
     }
 }

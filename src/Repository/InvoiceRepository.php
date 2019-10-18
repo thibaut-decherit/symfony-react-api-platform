@@ -6,7 +6,8 @@ use App\Entity\Invoice;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * @method Invoice|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,38 +17,77 @@ use Doctrine\ORM\NonUniqueResultException;
  */
 class InvoiceRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $em)
     {
         parent::__construct($registry, Invoice::class);
+        $this->em = $em;
     }
 
     /**
+     * Sets chrono of oldest Invoice with null chrono and owned by given User.
+     * Chrono is set to highest chrono in Invoices owned by given User + 1.
+     *
      * @param User $user
-     * @return int|null
-     * @throws NonUniqueResultException
+     * @return mixed
+     * @throws DBALException
      */
-    public function getLastChrono(User $user): ?int
+    public function setIncrementedChrono(User $user)
     {
-        return $this
-            ->createQueryBuilder('i')
-            ->select('i.chrono')
-            ->join('i.customer', 'c')
-            ->where('c.user = :user')
-            ->setParameter('user', $user)
-            ->orderBy('i.chrono', 'DESC')
-            ->setMaxResults(1)
-            ->getQuery()
-            ->getSingleScalarResult();
+        $customerTable = 'customer';
+        $invoiceTable = 'invoice';
+
+        $query = "
+                UPDATE $invoiceTable AS i
+                SET i.chrono = (
+                    SELECT chrono
+                    FROM (SELECT chrono, customer_id FROM $invoiceTable) AS i2
+                    WHERE i2.customer_id IN (
+                        SELECT id
+                        FROM (
+                            SELECT id FROM $customerTable
+                            WHERE user_id = :userId
+                        ) AS c
+                    )
+                    ORDER BY i2.chrono DESC
+                    LIMIT 1
+                ) + 1
+                WHERE i.id = (
+                    SELECT id
+                    FROM (SELECT id, chrono, customer_id FROM $invoiceTable) AS i3
+                    WHERE i3.chrono IS NULL
+                    AND i3.customer_id IN (
+                        SELECT id
+                        FROM (
+                            SELECT id FROM $customerTable
+                            WHERE user_id = :userId
+                        ) AS c2
+                    )
+                    ORDER BY id ASC
+                    LIMIT 1
+                )
+            ";
+
+        return $this->em
+            ->getConnection()->prepare($query)
+            ->execute([
+                'userId' => $user->getId()
+            ]);
     }
 
     /**
      * @param User $user
      * @return array
      */
-    public function getRecentlyAddedInvoices(User $user): array
+    public function getInvoicesWithoutChrono(User $user): array
     {
         return $this
             ->createQueryBuilder('i')
+            ->select('i.id')
             ->join('i.customer', 'c')
             ->where('c.user = :user')
             ->andWhere('i.chrono IS NULL')

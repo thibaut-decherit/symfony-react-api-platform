@@ -8,7 +8,7 @@ use App\Entity\Invoice;
 use App\Entity\User;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\DBAL\DBALException;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -120,29 +120,32 @@ class KernelViewSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * @throws NonUniqueResultException
+     * Sets incremented chrono to all Invoices while avoiding potential chrono discrepancy caused by race condition.
+     *
+     * @param ViewEvent $event
+     * @throws DBALException
      */
-    public function onInvoicePostWrite(): void
+    public function onInvoicePostWrite(ViewEvent $event): void
     {
+        $result = $event->getControllerResult();
+        $method = $event->getRequest()->getMethod();
+
+        if ($result instanceof Invoice === false || $method !== 'POST') {
+            return;
+        }
+
         /**
          * @var User $user
          */
         $user = $this->security->getUser();
 
-        $chrono = $this->objectManager->getRepository(Invoice::class)->getLastChrono($user);
+        $invoicesWithoutChrono = $this->objectManager->getRepository(Invoice::class)->getInvoicesWithoutChrono($user);
 
-        $invoices = $this->objectManager->getRepository(Invoice::class)->getRecentlyAddedInvoices($user);
+        while (!empty($invoicesWithoutChrono)) {
+            $this->objectManager->getRepository(Invoice::class)->setIncrementedChrono($user);
 
-        foreach ($invoices as $invoice) {
-            $chrono++;
-
-            /**
-             * @var $invoice Invoice
-             */
-            $invoice->setChrono($chrono);
+            $invoicesWithoutChrono = $this->objectManager->getRepository(Invoice::class)->getInvoicesWithoutChrono($user);
         }
-
-        $this->objectManager->flush();
     }
 
     /**

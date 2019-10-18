@@ -8,6 +8,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * @method Invoice|null find($id, $lockMode = null, $lockVersion = null)
@@ -33,10 +34,11 @@ class InvoiceRepository extends ServiceEntityRepository
      * Chrono is set to highest chrono in Invoices owned by given User + 1.
      *
      * @param User $user
+     * @param Invoice $invoice
      * @return mixed
      * @throws DBALException
      */
-    public function setIncrementedChrono(User $user)
+    public function setIncrementedChrono(Invoice $invoice, User $user)
     {
         $customerTable = 'customer';
         $invoiceTable = 'invoice';
@@ -56,26 +58,45 @@ class InvoiceRepository extends ServiceEntityRepository
                     ORDER BY i2.chrono DESC
                     LIMIT 1
                 ) + 1
-                WHERE i.id = (
-                    SELECT id
-                    FROM (SELECT id, chrono, customer_id FROM $invoiceTable) AS i3
-                    WHERE i3.chrono IS NULL
-                    AND i3.customer_id IN (
-                        SELECT id
-                        FROM (
-                            SELECT id FROM $customerTable
-                            WHERE user_id = :userId
-                        ) AS c2
-                    )
-                    ORDER BY id ASC
-                    LIMIT 1
-                )
+                WHERE i.id = :invoiceId
             ";
 
         return $this->em
             ->getConnection()->prepare($query)
             ->execute([
+                'invoiceId' => $invoice->getId(),
                 'userId' => $user->getId()
             ]);
+    }
+
+    /**
+     * @param Invoice $invoice
+     * @param User $user
+     * @return mixed
+     * @throws NonUniqueResultException
+     */
+    public function esetIncrementedChrono(Invoice $invoice, User $user)
+    {
+        return $this
+            ->createQueryBuilder('i')
+            ->update()
+            ->set(
+                'i.chrono',
+                // Gets highest chrono for this user + 1.
+                $this
+                    ->createQueryBuilder('i')
+                    ->select('i.chrono')
+                    ->join('i.customer', 'c')
+                    ->where('c.user = :user')
+                    ->setParameter('user', $user)
+                    ->orderBy('i.chrono', 'DESC')
+                    ->setMaxResults(1)
+                    ->getQuery()
+                    ->getSingleScalarResult() + 1
+            )
+            ->where('i.id = :invoice')
+            ->setParameter('invoice', $invoice)
+            ->getQuery()
+            ->execute();
     }
 }

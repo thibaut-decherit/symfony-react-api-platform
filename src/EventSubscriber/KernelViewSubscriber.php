@@ -9,7 +9,6 @@ use App\Entity\User;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
@@ -140,11 +139,16 @@ class KernelViewSubscriber implements EventSubscriberInterface
         }
 
         /**
+         * @var Invoice $invoice
+         */
+        $invoice = $result;
+
+        /**
          * @var User $user
          */
         $user = $this->security->getUser();
 
-        $this->objectManager->getRepository(Invoice::class)->setIncrementedChrono($user);
+        $this->objectManager->getRepository(Invoice::class)->esetIncrementedChrono($invoice, $user);
     }
 
     /**

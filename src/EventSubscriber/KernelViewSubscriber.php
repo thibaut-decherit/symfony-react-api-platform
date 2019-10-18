@@ -121,12 +121,14 @@ class KernelViewSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Sets incremented chrono to all Invoices without Chrono for current User while avoiding potential chrono
-     * discrepancy caused by race condition.
+     * Sets incremented chrono to oldest Invoice without Chrono for current User while avoiding potential chrono
+     * discrepancy caused by race condition between the moment when highest chrono is read from db then set to newest
+     * Invoice object and the moment when newest Invoice is written to db with highest chrono + 1: a discrepancy could
+     * appear if another Invoice is created between these two moments (the same highest chrono + 1 could be set).
+     * See https://stackoverflow.com/questions/24681613/doctrine-entity-increase-value-download-counter#comment95515263_24681957
      *
      * @param ViewEvent $event
      * @throws DBALException
-     * @throws NonUniqueResultException
      */
     public function onInvoicePostWrite(ViewEvent $event): void
     {
@@ -141,15 +143,8 @@ class KernelViewSubscriber implements EventSubscriberInterface
          * @var User $user
          */
         $user = $this->security->getUser();
-        $invoiceRepository = $this->objectManager->getRepository(Invoice::class);
 
-        $invoicesWithoutChronoCount = $invoiceRepository->countInvoicesWithoutChrono($user);
-
-        while ($invoicesWithoutChronoCount > 0) {
-            $invoiceRepository->setIncrementedChrono($user);
-
-            $invoicesWithoutChronoCount = $invoiceRepository->countInvoicesWithoutChrono($user);
-        }
+        $this->objectManager->getRepository(Invoice::class)->setIncrementedChrono($user);
     }
 
     /**

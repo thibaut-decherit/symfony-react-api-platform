@@ -8,7 +8,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * @method Invoice|null find($id, $lockMode = null, $lockVersion = null)
@@ -78,23 +77,5 @@ class InvoiceRepository extends ServiceEntityRepository
             ->execute([
                 'userId' => $user->getId()
             ]);
-    }
-
-    /**
-     * @param User $user
-     * @return int
-     * @throws NonUniqueResultException
-     */
-    public function countInvoicesWithoutChrono(User $user): int
-    {
-        return $this
-            ->createQueryBuilder('i')
-            ->select('COUNT(i.id)')
-            ->join('i.customer', 'c')
-            ->where('c.user = :user')
-            ->andWhere('i.chrono IS NULL')
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 }

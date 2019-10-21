@@ -1,0 +1,23 @@
+{
+    "devDependencies": {
+        "@symfony/webpack-encore": "^0.28.0",
+        "core-js": "^3.0.0",
+        "regenerator-runtime": "^0.13.2",
+        "webpack-notifier": "^1.6.0"
+    },
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "encore production --progress",
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "encore:dev": "encore dev --watch",
+        "encore:prod": "encore production",
+        "watch": "encore dev --watch"
+    },
+    "name": "symfony-react-api-platform",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "https://github.com/thibaut-decherit/symfony-react-api-platform.git",
+    "author": "Thibaut Decherit <thibaut.decherit@protonmail.com>"
+}

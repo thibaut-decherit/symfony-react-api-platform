@@ -9,7 +9,6 @@ use App\Entity\User;
 use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\DBALException;
-use Doctrine\ORM\NonUniqueResultException;
 use Exception;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ViewEvent;

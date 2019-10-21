@@ -17,7 +17,7 @@ Encore
     // .setManifestKeyPrefix('build/')
 
     // Main entry for JS required globally. File includes a reference to assets/css/app.scss for CSS required globally.
-    .addEntry('app', './assets/js/app.js')
+    .addEntry('app', './assets/js/app.jsx')
 
     /*
      Entries for JS tied to a specific page/feature.
@@ -29,7 +29,7 @@ Encore
     .splitEntryChunks()
 
     // Allows sass/scss files to be processed.
-    // .enableSassLoader()
+    .enableSassLoader()
 
     // Allows legacy applications to use $/jQuery as a global variable.
     // .autoProvidejQuery()
@@ -61,9 +61,8 @@ Encore
         corejs: 3
     })
 
-// uncomment if you use API Platform Admin (composer req api-admin)
-//.enableReactPreset()
-//.addEntry('admin', './assets/js/admin.js')
+
+    .enableReactPreset()
 ;
 
 // Exports the final configuration.

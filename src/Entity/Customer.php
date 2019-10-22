@@ -16,6 +16,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CustomerRepository")
  * @ApiResource(
+ *     attributes={
+ *          "security_post_denormalize"="object.getUser().getId() === user.getId() and previous_object.getUser().getId() === user.getId()",
+ *     },
+ *     collectionOperations={
+ *          "post"={
+ *              "security_post_denormalize"="object.getCustomer().getUser().getId() === user.getId()"
+ *          }
+ *     },
  *     normalizationContext={
  *          "groups"={"customer_read"}
  *     }

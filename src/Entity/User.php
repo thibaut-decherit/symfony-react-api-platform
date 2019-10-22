@@ -15,6 +15,14 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\UserRepository")
  * @UniqueEntity(fields="email", message="form_errors.user.unique_email")
  * @ApiResource(
+ *     attributes={
+ *          "security_post_denormalize"="object.getId() === user.getId() and previous_object.getId() === user.getId()",
+ *     },
+ *     collectionOperations={
+ *          "post"={
+ *              "security_post_denormalize"="true === true"
+ *          }
+ *     },
  *     normalizationContext={
  *          "groups"={"user_read"}
  *     }

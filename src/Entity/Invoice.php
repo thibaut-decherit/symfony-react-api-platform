@@ -15,9 +15,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\InvoiceRepository")
  * @ApiResource(
  *     attributes={
+ *          "security_post_denormalize"="object.getCustomer().getUser().getId() === user.getId() and previous_object.getCustomer().getUser().getId() === user.getId()",
  *          "pagination_enabled"=true,
  *          "pagination_items_per_page"=20,
  *          "order"={"sentAt"="desc"},
+ *     },
+ *     collectionOperations={
+ *          "post"={
+ *              "security_post_denormalize"="object.getCustomer().getUser().getId() === user.getId()"
+ *          }
  *     },
  *     normalizationContext={
  *          "groups"={"invoice_read"}

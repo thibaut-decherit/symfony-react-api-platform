@@ -1,0 +1,33 @@
+{
+    "devDependencies": {
+        "@babel/preset-react": "^7.0.0",
+        "@symfony/webpack-encore": "^0.28.0",
+        "core-js": "^3.0.0",
+        "node-sass": "^4.12.0",
+        "regenerator-runtime": "^0.13.2",
+        "sass-loader": "^7.0.1",
+        "webpack-notifier": "^1.6.0"
+    },
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "build": "encore production --progress",
+        "dev-server": "encore dev-server",
+        "dev": "encore dev",
+        "encore:dev": "encore dev --watch",
+        "encore:prod": "encore production",
+        "watch": "encore dev --watch"
+    },
+    "name": "symfony-react-api-platform",
+    "version": "1.0.0",
+    "main": "index.js",
+    "repository": "https://github.com/thibaut-decherit/symfony-react-api-platform.git",
+    "author": "Thibaut Decherit <thibaut.decherit@protonmail.com>",
+    "dependencies": {
+        "@babel/core": "^7.0.0-0",
+        "axios": "0.18.0",
+        "react": "16.8.6",
+        "react-dom": "16.8.6",
+        "react-router-dom": "5.0.0"
+    }
+}

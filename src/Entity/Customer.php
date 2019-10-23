@@ -125,16 +125,18 @@ class Customer
      */
     public function getPaidAmount(): float
     {
-        return array_reduce(
-            $this->invoices->toArray(),
-            function (float $total, Invoice $invoice): float {
-                if ($invoice->getStatus() === 'PAID') {
-                    $total += $invoice->getAmount();
-                }
+        return round(
+            array_reduce(
+                $this->invoices->toArray(),
+                function (float $total, Invoice $invoice): float {
+                    if ($invoice->getStatus() === 'PAID') {
+                        $total += $invoice->getAmount();
+                    }
 
-                return $total;
-            }, 0
-        );
+                    return $total;
+                }, 0
+            ),
+            2);
     }
 
     /**
@@ -143,12 +145,14 @@ class Customer
      */
     public function getTotalAmount(): float
     {
-        return array_reduce(
-            $this->invoices->toArray(),
-            function (float $total, Invoice $invoice): float {
-                return $total + $invoice->getAmount();
-            }, 0
-        );
+        return round(
+            array_reduce(
+                $this->invoices->toArray(),
+                function (float $total, Invoice $invoice): float {
+                    return $total + $invoice->getAmount();
+                }, 0
+            ),
+            2);
     }
 
     /**
@@ -157,16 +161,18 @@ class Customer
      */
     public function getUnpaidAmount(): float
     {
-        return array_reduce(
-            $this->invoices->toArray(),
-            function (float $total, Invoice $invoice): float {
-                if ($invoice->getStatus() === 'SENT') {
-                    $total += $invoice->getAmount();
-                }
+        return round(
+            array_reduce(
+                $this->invoices->toArray(),
+                function (float $total, Invoice $invoice): float {
+                    if ($invoice->getStatus() === 'SENT') {
+                        $total += $invoice->getAmount();
+                    }
 
-                return $total;
-            }, 0
-        );
+                    return $total;
+                }, 0
+            ),
+            2);
     }
 
     /**

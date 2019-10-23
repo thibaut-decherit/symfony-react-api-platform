@@ -1,10 +1,19 @@
-import '../scss/app.scss';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
+import '../scss/app.scss';
+import Navbar from './components/Navbar';
+import Homepage from './pages/Homepage';
 
 const App = () => {
-    return <h1>Hello world!</h1>;
+    return (
+        <>
+            <Navbar/>
+
+            <div className="container pt-5">
+                <Homepage/>
+            </div>
+        </>
+    );
 };
 
 const rootElement = document.querySelector('#app');

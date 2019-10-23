@@ -1,9 +1,9 @@
 import React from 'react';
+import Container from 'react-bootstrap/Container';
 import ReactDOM from 'react-dom';
-import {HashRouter, Route, Switch} from 'react-router-dom'
+import {HashRouter, Route, Switch} from 'react-router-dom';
 import '../scss/app.scss';
 import Navbar from './components/Navbar';
-import Homepage from './pages/Homepage';
 import Home from './pages/Home';
 
 const App = () => {
@@ -11,12 +11,12 @@ const App = () => {
         <HashRouter>
             <Navbar/>
 
-            <main className="container pt-5">
+            <Container className="pt-5">
                 <Switch>
             </div>
                     <Route path="/" component={Home}/>
                 </Switch>
-            </main>
+            </Container>
         </HashRouter>
     );
 };

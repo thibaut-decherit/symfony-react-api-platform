@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Home = (props) => {
+export default (props) => {
     return (
         <div className="jumbotron">
             <h1 className="display-3">Hello, world!</h1>
@@ -19,5 +19,3 @@ const Home = (props) => {
         </div>
     );
 };
-
-export default Home;

@@ -1,0 +1,39 @@
+@import '../constants/bootstrap';
+@import '~bootstrap/scss/bootstrap';
+
+.btn {
+  border-radius: 0;
+
+  &.disabled, &:disabled {
+    opacity: 1 !important;
+    cursor: not-allowed;
+  }
+}
+
+.table th, .table td {
+  vertical-align: middle;
+}
+
+@include media-breakpoint-up(xs) {
+  html {
+    font-size: 1rem;
+  }
+}
+
+@include media-breakpoint-up(sm) {
+  html {
+    font-size: 1rem;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  html {
+    font-size: 1rem;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  html {
+    font-size: 0.9rem;
+  }
+}

@@ -41,7 +41,7 @@ export default (props) => {
     };
 
     return (
-        <>
+        <div>
             <h1>Clients</h1>
 
             <table className="table table-hover">
@@ -80,6 +80,6 @@ export default (props) => {
                 })}
                 </tbody>
             </table>
-        </>
+        </div>
     );
 };

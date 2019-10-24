@@ -4,25 +4,67 @@ import Spinner from 'react-bootstrap/Spinner';
 
 const DeleteButton = props => {
     const [pendingDelete, setPendingDelete] = useState(false);
+    const [pendingConfirmation, setPendingConfirmation] = useState(false);
 
-    const handleClick = () => {
-        setPendingDelete(true);
-        props.onClick();
+    const deleteButton = () => {
+        const getLabel = () => {
+            if (pendingDelete) {
+                return (
+                    <Spinner animation="border" size="sm"/>
+                );
+            }
+
+            return 'Delete';
+        };
+
+        const showConfirmationButtons = () => {
+            setPendingConfirmation(true);
+        };
+
+        return (
+            <Button onClick={() => showConfirmationButtons()} variant={props.variant} size={props.size}
+                    disabled={pendingDelete}
+            >
+                {getLabel()}
+            </Button>
+        );
     };
 
-    const getLabel = () => {
-        if (!pendingDelete) {
-            return 'Delete'
-        } else {
-            return <Spinner animation="grow" size="sm"/>
-        }
+    const confirmationButtons = () => {
+        const handleDeleteButtonClick = () => {
+            setPendingDelete(true);
+            setPendingConfirmation(false);
+
+            props.onClick();
+        };
+
+        const handleCancelButtonClick = () => {
+            setPendingConfirmation(false);
+        };
+
+        return (
+            <div>
+                <Button
+                    onClick={() => handleDeleteButtonClick()} variant="success" className="w-50"
+                    aria-label="Confirm deletion"
+                >
+                    Y
+                </Button>
+                <Button
+                    onClick={() => handleCancelButtonClick()} variant="danger" className="w-50"
+                    aria-label="Cancel deletion"
+                >
+                    N
+                </Button>
+            </div>
+        );
     };
 
-    return (
-        <Button onClick={() => handleClick()} variant={props.variant} size={props.size} disabled={pendingDelete}>
-            {getLabel()}
-        </Button>
-    );
+    if (pendingConfirmation) {
+        return confirmationButtons();
+    }
+
+    return deleteButton();
 };
 
 DeleteButton.defaultProps = {

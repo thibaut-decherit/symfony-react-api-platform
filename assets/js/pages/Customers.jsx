@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, {useEffect, useState} from 'react';
+import DeleteButton from '../components/DeleteButton';
 
 export default (props) => {
     const [customers, setCustomers] = useState([]);
@@ -14,7 +15,8 @@ export default (props) => {
      See https://reactjs.org/docs/hooks-effect.html
      */
     useEffect(() => {
-        axios.get('https://localhost:8000/api/customers')
+        axios
+            .get('https://localhost:8000/api/customers')
             .then(response => {
                 setCustomers(response.data['hydra:member']);
             })
@@ -22,6 +24,21 @@ export default (props) => {
                 console.log(error)
             })
     }, []);
+
+    const handleDelete = customerID => {
+        axios
+            .delete('https://localhost:8000/api/customers/' + customerID)
+            .then(response => {
+                if (response.status < 300) {
+                    setCustomers(customers.filter(customer => customer.id !== customerID));
+                } else {
+                    console.log(response);
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    };
 
     return (
         <>
@@ -54,7 +71,9 @@ export default (props) => {
                             <td>{customer.unpaidAmount.toLocaleString()} €</td>
                             <td>{customer.paidAmount.toLocaleString()} €</td>
                             <td>
-                                <button className="btn btn-sm btn-danger">Delete</button>
+                                <DeleteButton
+                                    onClick={() => handleDelete(customer.id)}
+                                />
                             </td>
                         </tr>
                     );

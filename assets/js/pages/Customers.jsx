@@ -26,18 +26,25 @@ export default (props) => {
     }, []);
 
     const handleDelete = customerID => {
-        axios
-            .delete('https://localhost:8000/api/customers/' + customerID)
-            .then(response => {
-                if (response.status < 300) {
-                    setCustomers(customers.filter(customer => customer.id !== customerID));
-                } else {
-                    console.log(response);
-                }
-            })
-            .catch(error => {
-                console.log(error);
-            })
+        return new Promise((resolve, reject) => {
+            axios
+                .delete('https://localhost:8000/api/customers/' + customerID)
+                .then(response => {
+                    if (response.status < 300) {
+                        setCustomers(customers.filter(customer => customer.id !== customerID));
+                        resolve();
+                    } else {
+                        console.error(
+                            `Server responded with status code ${response.status}`
+                        );
+                        reject();
+                    }
+                })
+                .catch(error => {
+                    console.error(error.message);
+                    reject();
+                })
+        })
     };
 
     return (

@@ -1,6 +1,28 @@
-import React from 'react';
+import axios from 'axios';
+import React, {useEffect, useState} from 'react';
 
 export default (props) => {
+    const [customers, setCustomers] = useState([]);
+
+    /*
+     useEffect hook is called on render.
+     If optional second parameter is:
+        - not specified, the hook is called on each render
+        - an empty array, the hook is called only on the first render of the component
+        - an array containing one or multiple variables, the hook is called on render if one of the values has changed since
+        previous render
+     See https://reactjs.org/docs/hooks-effect.html
+     */
+    useEffect(() => {
+        axios.get('https://localhost:8000/api/customers')
+            .then(response => {
+                setCustomers(response.data['hydra:member']);
+            })
+            .catch(error => {
+                console.log(error)
+            })
+    }, []);
+
     return (
         <>
             <h1>Clients</h1>
@@ -13,37 +35,30 @@ export default (props) => {
                     <th>Email</th>
                     <th>Company</th>
                     <th>Invoices</th>
-                    <th>Total amount</th>
+                    <th>Unpaid</th>
+                    <th>Paid</th>
                     <th/>
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td className="">18</td>
-                    <td>
-                        <a href="#">Thibaut Decherit</a>
-                    </td>
-                    <td>thibaut@symreact.com</td>
-                    <td>SymReact Inc.</td>
-                    <td>4</td>
-                    <td>2400€</td>
-                    <td>
-                        <button className="btn btn-sm btn-danger">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td className="">18</td>
-                    <td>
-                        <a href="#">Thibaut Decherit</a>
-                    </td>
-                    <td>thibaut@symreact.com</td>
-                    <td>SymReact Inc.</td>
-                    <td>4</td>
-                    <td>2400€</td>
-                    <td>
-                        <button className="btn btn-sm btn-danger">Delete</button>
-                    </td>
-                </tr>
+                {customers.map(customer => {
+                    return (
+                        <tr key={customer.id}>
+                            <td className="">{customer.id}</td>
+                            <td>
+                                <a href="#">{customer.firstName + ' ' + customer.lastName}</a>
+                            </td>
+                            <td>{customer.email}</td>
+                            <td>{customer.company}</td>
+                            <td>{customer.invoices.length}</td>
+                            <td>{customer.unpaidAmount.toLocaleString()} €</td>
+                            <td>{customer.paidAmount.toLocaleString()} €</td>
+                            <td>
+                                <button className="btn btn-sm btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                    );
+                })}
                 </tbody>
             </table>
         </>

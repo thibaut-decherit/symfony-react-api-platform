@@ -108,11 +108,6 @@ class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryIt
         array $context = []
     ): void
     {
-        if (!key_exists('select', $queryBuilder->getDQLParts())) {
-            dd($queryBuilder);
-
-        }
-
         if (!$this->supports($resourceClass)) {
             return;
         }

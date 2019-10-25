@@ -2,9 +2,14 @@ import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import CustomerItem from './CustomerItem';
 import CustomerListContext from './CustomerListContext';
+import CustomerListPagination from './CustomerListPagination';
 
 export default props => {
     const [customers, setCustomers] = useState([]);
+    const [paginatorSettings, setPaginatorSettings] = useState({
+        customersPerPage: 3,
+        totalCustomersCount: 0
+    });
 
     /*
      useEffect hook is called on render.
@@ -16,15 +21,23 @@ export default props => {
      See https://reactjs.org/docs/hooks-effect.html
      */
     useEffect(() => {
+        getCustomerPage(1);
+    }, []);
+
+    const getCustomerPage = pageNumber => {
         axios
-            .get('https://localhost:8000/api/customers')
+            .get(`https://localhost:8000/api/customers?pagination=true&itemsPerPage=${paginatorSettings.customersPerPage}&page=${pageNumber}`)
             .then(response => {
                 setCustomers(response.data['hydra:member']);
+                setPaginatorSettings({
+                    ...paginatorSettings,
+                    totalCustomersCount: response.data['hydra:totalItems']
+                })
             })
             .catch(error => {
                 console.log(error)
             })
-    }, []);
+    };
 
     const handleDelete = customerID => {
         return new Promise((resolve, reject) => {
@@ -77,6 +90,7 @@ export default props => {
                     })}
                 </tbody>
             </table>
+            <CustomerListPagination settings={paginatorSettings} getCustomerPage={getCustomerPage}/>
         </CustomerListContext.Provider>
     );
 };

@@ -3,8 +3,9 @@ import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
 const DeleteButton = props => {
-    const [pendingDelete, setPendingDelete] = useState(false);
+    const [confirmationButtonsInteractive, setConfirmationButtonsInteractive] = useState(false);
     const [pendingConfirmation, setPendingConfirmation] = useState(false);
+    const [pendingDelete, setPendingDelete] = useState(false);
 
     const deleteButton = () => {
         const getLabel = () => {
@@ -19,6 +20,10 @@ const DeleteButton = props => {
 
         const showConfirmationButtons = () => {
             setPendingConfirmation(true);
+
+            setTimeout(() => {
+                setConfirmationButtonsInteractive(true);
+            }, 250)
         };
 
         return (
@@ -32,6 +37,12 @@ const DeleteButton = props => {
 
     const confirmationButtons = () => {
         const handleDeleteButtonClick = () => {
+            if (!confirmationButtonsInteractive) {
+                return;
+            } else {
+                setConfirmationButtonsInteractive(false);
+            }
+
             setPendingDelete(true);
             setPendingConfirmation(false);
 
@@ -43,6 +54,12 @@ const DeleteButton = props => {
         };
 
         const handleCancelButtonClick = () => {
+            if (!confirmationButtonsInteractive) {
+                return;
+            } else {
+                setConfirmationButtonsInteractive(false);
+            }
+
             setPendingConfirmation(false);
         };
 

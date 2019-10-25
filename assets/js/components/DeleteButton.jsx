@@ -36,7 +36,7 @@ const DeleteButton = props => {
             setPendingConfirmation(false);
 
             // Button goes back to initial state if delete request fails.
-            props.onClick()
+            props.handleDelete()
                 .catch(() => {
                     setPendingDelete(false);
                 });

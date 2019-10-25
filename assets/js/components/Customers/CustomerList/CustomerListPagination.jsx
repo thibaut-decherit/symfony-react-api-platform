@@ -1,12 +1,9 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 
 export default props => {
-    const [currentPage, setCurrentPage] = useState(1);
-
     const handleClick = pageNumber => {
-        setCurrentPage(pageNumber);
-        props.getCustomerPage(pageNumber);
+        props.setPageNumber(pageNumber);
     };
 
     const generatePaginationItems = () => {
@@ -24,7 +21,8 @@ export default props => {
         for (let pageNumber = 1; pageNumber <= calculatePagesCount(props.settings); pageNumber++) {
             items.push(
                 <Pagination.Item
-                    key={pageNumber} onClick={() => handleClick(pageNumber)} active={pageNumber === currentPage}
+                    key={pageNumber} onClick={() => handleClick(pageNumber)}
+                    active={pageNumber === props.currentPageNumber}
                 >
                     {pageNumber}
                 </Pagination.Item>
@@ -34,8 +32,13 @@ export default props => {
         return items;
     };
 
+    const items = generatePaginationItems();
 
-    return (
-        <Pagination className="d-flex justify-content-center" size="sm">{generatePaginationItems()}</Pagination>
-    );
+    if (items.length > 1) {
+        return (
+            <Pagination className="d-flex justify-content-center" size="sm">{items}</Pagination>
+        );
+    } else {
+        return null;
+    }
 };

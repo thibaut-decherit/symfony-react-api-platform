@@ -1,42 +1,44 @@
 import axios from 'axios';
 import React, {useEffect, useState} from 'react';
+import DropdownButton from '../../DropdownButton';
 import CustomerItem from './CustomerItem';
 import CustomerListContext from './CustomerListContext';
 import CustomerListPagination from './CustomerListPagination';
 
 export default props => {
     const [customers, setCustomers] = useState([]);
-    const [paginatorSettings, setPaginatorSettings] = useState({
-        customersPerPage: 3,
-        totalCustomersCount: 0
-    });
+    const [customersPerPage, setCustomersPerPage] = useState(5);
+    const [totalCustomersCount, setTotalCustomersCount] = useState(0);
+    const [pageNumber, setPageNumber] = useState(1);
 
     /*
      useEffect hook is called on render.
      If optional second parameter is:
         - not specified, the hook is called on each render
         - an empty array, the hook is called only on the first render of the component
-        - an array containing one or multiple variables, the hook is called on render if one of the values has changed since
-        previous render
+        - an array containing one or multiple variables (most proably states), the hook is called on render if one of
+        the values has changed since previous render
      See https://reactjs.org/docs/hooks-effect.html
      */
     useEffect(() => {
-        getCustomerPage(1);
-    }, []);
+        getCustomerPage(pageNumber);
+    }, [pageNumber, customersPerPage]);
 
     const getCustomerPage = pageNumber => {
         axios
-            .get(`https://localhost:8000/api/customers?pagination=true&itemsPerPage=${paginatorSettings.customersPerPage}&page=${pageNumber}`)
+            .get(`https://localhost:8000/api/customers?pagination=true&itemsPerPage=${customersPerPage}&page=${pageNumber}`)
             .then(response => {
                 setCustomers(response.data['hydra:member']);
-                setPaginatorSettings({
-                    ...paginatorSettings,
-                    totalCustomersCount: response.data['hydra:totalItems']
-                })
+                setTotalCustomersCount(response.data['hydra:totalItems']);
             })
             .catch(error => {
                 console.log(error)
             })
+    };
+
+    const updateCustomersPerPage = customersPerPage => {
+        setPageNumber(1);
+        setCustomersPerPage(customersPerPage);
     };
 
     const handleDelete = customerID => {
@@ -77,7 +79,11 @@ export default props => {
                         <th>Invoices</th>
                         <th>Unpaid</th>
                         <th>Paid</th>
-                        <th/>
+                        <th>
+                            <DropdownButton
+                                choices={[5, 10, 25]} callback={updateCustomersPerPage} label={customersPerPage}
+                            />
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -90,7 +96,10 @@ export default props => {
                     })}
                 </tbody>
             </table>
-            <CustomerListPagination settings={paginatorSettings} getCustomerPage={getCustomerPage}/>
+            <CustomerListPagination
+                settings={{customersPerPage, totalCustomersCount}} currentPageNumber={pageNumber}
+                setPageNumber={setPageNumber}
+            />
         </CustomerListContext.Provider>
     );
 };

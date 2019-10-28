@@ -3,7 +3,7 @@ import Pagination from 'react-bootstrap/Pagination';
 
 export default props => {
     const handleClick = pageNumber => {
-        props.setStatePageNumber(pageNumber);
+        props.setCurrentPageNumber(pageNumber);
     };
 
     const generatePaginationItems = () => {

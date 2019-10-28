@@ -5,10 +5,10 @@ import Paginator from '../../reusable/Paginator';
 import CustomerItem from './CustomerItem';
 import CustomerListContext from './CustomerListContext';
 
-export default props => {
+export default () => {
     const [stateCustomers, setStateCustomers] = useState([]);
     const [stateCustomersPerPage, setStateCustomersPerPage] = useState(5);
-    const [statePageNumber, setStatePageNumber] = useState(1);
+    const [stateCurrentPageNumber, setStateCurrentPageNumber] = useState(1);
     const [stateTotalCustomersCount, setStateTotalCustomersCount] = useState(0);
 
     /*
@@ -21,12 +21,12 @@ export default props => {
      See https://reactjs.org/docs/hooks-effect.html
      */
     useEffect(() => {
-        getCustomerPage(statePageNumber);
-    }, [statePageNumber, stateCustomersPerPage]);
+        getCustomerPage(stateCurrentPageNumber);
+    }, [stateCurrentPageNumber, stateCustomersPerPage]);
 
-    const getCustomerPage = statePageNumber => {
+    const getCustomerPage = stateCurrentPageNumber => {
         axios
-            .get(`https://localhost:8000/api/customers?pagination=true&itemsPerPage=${stateCustomersPerPage}&page=${statePageNumber}`)
+            .get(`https://localhost:8000/api/customers?pagination=true&itemsPerPage=${stateCustomersPerPage}&page=${stateCurrentPageNumber}`)
             .then(response => {
                 setStateCustomers(response.data['hydra:member']);
                 setStateTotalCustomersCount(response.data['hydra:totalItems']);
@@ -37,7 +37,7 @@ export default props => {
     };
 
     const updateCustomersPerPage = stateCustomersPerPage => {
-        setStatePageNumber(1);
+        setStateCurrentPageNumber(1);
         setStateCustomersPerPage(stateCustomersPerPage);
     };
 
@@ -99,7 +99,7 @@ export default props => {
             </table>
             <Paginator
                 itemsPerPage={stateCustomersPerPage} totalItemsCount={stateTotalCustomersCount}
-                currentPageNumber={statePageNumber} setStatePageNumber={setStatePageNumber}
+                currentPageNumber={stateCurrentPageNumber} setCurrentPageNumber={setStateCurrentPageNumber}
             />
         </CustomerListContext.Provider>
     );

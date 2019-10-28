@@ -82,6 +82,7 @@ export default props => {
                         <th>
                             <DropdownButton
                                 choices={[5, 10, 25]} callback={updateCustomersPerPage} label={stateCustomersPerPage}
+                                size="block"
                             />
                         </th>
                     </tr>
@@ -97,8 +98,8 @@ export default props => {
                 </tbody>
             </table>
             <Paginator
-                itemsPerPage={stateCustomersPerPage} totalItemsCount={stateTotalCustomersCount} currentPageNumber={statePageNumber}
-                setStatePageNumber={setStatePageNumber}
+                itemsPerPage={stateCustomersPerPage} totalItemsCount={stateTotalCustomersCount}
+                currentPageNumber={statePageNumber} setStatePageNumber={setStatePageNumber}
             />
         </CustomerListContext.Provider>
     );

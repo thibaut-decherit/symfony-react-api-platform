@@ -3,14 +3,14 @@ import Pagination from 'react-bootstrap/Pagination';
 
 export default props => {
     const handleClick = pageNumber => {
-        props.setPageNumber(pageNumber);
+        props.setStatePageNumber(pageNumber);
     };
 
     const generatePaginationItems = () => {
-        const calculatePagesCount = settings => {
-            let count = settings.totalCustomersCount / settings.customersPerPage;
+        const calculatePagesCount = () => {
+            let count = props.totalItemsCount / props.itemsPerPage;
 
-            if (settings.totalCustomersCount % settings.customersPerPage !== 0) {
+            if (props.totalItemsCount % props.itemsPerPage !== 0) {
                 count++;
             }
 
@@ -18,7 +18,7 @@ export default props => {
         };
 
         let items = [];
-        for (let pageNumber = 1; pageNumber <= calculatePagesCount(props.settings); pageNumber++) {
+        for (let pageNumber = 1; pageNumber <= calculatePagesCount(); pageNumber++) {
             items.push(
                 <Pagination.Item
                     key={pageNumber} onClick={() => handleClick(pageNumber)}

@@ -1,15 +1,15 @@
 import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import DropdownButton from '../../DropdownButton';
+import Paginator from '../../Paginator';
 import CustomerItem from './CustomerItem';
 import CustomerListContext from './CustomerListContext';
-import CustomerListPagination from './CustomerListPagination';
 
 export default props => {
-    const [customers, setCustomers] = useState([]);
-    const [customersPerPage, setCustomersPerPage] = useState(5);
-    const [totalCustomersCount, setTotalCustomersCount] = useState(0);
-    const [pageNumber, setPageNumber] = useState(1);
+    const [stateCustomers, setStateCustomers] = useState([]);
+    const [stateCustomersPerPage, setStateCustomersPerPage] = useState(5);
+    const [statePageNumber, setStatePageNumber] = useState(1);
+    const [stateTotalCustomersCount, setStateTotalCustomersCount] = useState(0);
 
     /*
      useEffect hook is called on render.
@@ -21,24 +21,24 @@ export default props => {
      See https://reactjs.org/docs/hooks-effect.html
      */
     useEffect(() => {
-        getCustomerPage(pageNumber);
-    }, [pageNumber, customersPerPage]);
+        getCustomerPage(statePageNumber);
+    }, [statePageNumber, stateCustomersPerPage]);
 
-    const getCustomerPage = pageNumber => {
+    const getCustomerPage = statePageNumber => {
         axios
-            .get(`https://localhost:8000/api/customers?pagination=true&itemsPerPage=${customersPerPage}&page=${pageNumber}`)
+            .get(`https://localhost:8000/api/customers?pagination=true&itemsPerPage=${stateCustomersPerPage}&page=${statePageNumber}`)
             .then(response => {
-                setCustomers(response.data['hydra:member']);
-                setTotalCustomersCount(response.data['hydra:totalItems']);
+                setStateCustomers(response.data['hydra:member']);
+                setStateTotalCustomersCount(response.data['hydra:totalItems']);
             })
             .catch(error => {
                 console.log(error)
             })
     };
 
-    const updateCustomersPerPage = customersPerPage => {
-        setPageNumber(1);
-        setCustomersPerPage(customersPerPage);
+    const updateCustomersPerPage = stateCustomersPerPage => {
+        setStatePageNumber(1);
+        setStateCustomersPerPage(stateCustomersPerPage);
     };
 
     const handleDelete = customerID => {
@@ -47,7 +47,7 @@ export default props => {
                 .delete('https://localhost:8000/api/customers/' + customerID)
                 .then(response => {
                     if (response.status < 300) {
-                        setCustomers(customers.filter(customer => customer.id !== customerID));
+                        setStateCustomers(stateCustomers.filter(customer => customer.id !== customerID));
                         resolve();
                     } else {
                         console.error(
@@ -81,13 +81,13 @@ export default props => {
                         <th>Paid</th>
                         <th>
                             <DropdownButton
-                                choices={[5, 10, 25]} callback={updateCustomersPerPage} label={customersPerPage}
+                                choices={[5, 10, 25]} callback={updateCustomersPerPage} label={stateCustomersPerPage}
                             />
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    {customers.map(customer => {
+                    {stateCustomers.map(customer => {
                         return (
                             <CustomerItem
                                 key={customer.id} customer={customer}
@@ -96,9 +96,9 @@ export default props => {
                     })}
                 </tbody>
             </table>
-            <CustomerListPagination
-                settings={{customersPerPage, totalCustomersCount}} currentPageNumber={pageNumber}
-                setPageNumber={setPageNumber}
+            <Paginator
+                itemsPerPage={stateCustomersPerPage} totalItemsCount={stateTotalCustomersCount} currentPageNumber={statePageNumber}
+                setStatePageNumber={setStatePageNumber}
             />
         </CustomerListContext.Provider>
     );

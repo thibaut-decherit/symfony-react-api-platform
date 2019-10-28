@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, {useEffect, useState} from 'react';
-import DropdownButton from '../../DropdownButton';
-import Paginator from '../../Paginator';
+import DropdownButton from '../../reusable/DropdownButton';
+import Paginator from '../../reusable/Paginator';
 import CustomerItem from './CustomerItem';
 import CustomerListContext from './CustomerListContext';
 

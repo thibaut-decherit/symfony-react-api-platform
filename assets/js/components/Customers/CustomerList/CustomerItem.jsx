@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import DeleteButton from '../../DeleteButton';
+import DeleteButton from '../../reusable/DeleteButton';
 import CustomerListContext from './CustomerListContext';
 
 export default props => {

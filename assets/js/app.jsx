@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import ReactDOM from 'react-dom';
 import {HashRouter, Route, Switch} from 'react-router-dom';
 import '../scss/app.scss';
-import Navbar from './components/Navbar';
+import Navbar from './components/reusable/Navbar';
 import Customers from './pages/Customers';
 import Home from './pages/Home';
 

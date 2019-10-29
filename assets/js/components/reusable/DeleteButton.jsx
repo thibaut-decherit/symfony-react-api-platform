@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Spinner from 'react-bootstrap/Spinner';
 
-const DeleteButton = props => {
+const DeleteButton = ({handleDelete, variant, size}) => {
     const [confirmationButtonsInteractive, setConfirmationButtonsInteractive] = useState(false);
     const [pendingConfirmation, setPendingConfirmation] = useState(false);
     const [pendingDelete, setPendingDelete] = useState(false);
@@ -27,7 +27,7 @@ const DeleteButton = props => {
         };
 
         return (
-            <Button onClick={() => showConfirmationButtons()} variant={props.variant} size={props.size}
+            <Button onClick={() => showConfirmationButtons()} variant={variant} size={size}
                     disabled={pendingDelete}
             >
                 {getLabel()}
@@ -47,7 +47,7 @@ const DeleteButton = props => {
             setPendingConfirmation(false);
 
             // Button goes back to initial state if delete request fails.
-            props.handleDelete()
+            handleDelete()
                 .catch(() => {
                     setPendingDelete(false);
                 });

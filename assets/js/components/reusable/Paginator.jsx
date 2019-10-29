@@ -1,24 +1,24 @@
 import React from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 
-export default props => {
+export default ({itemsPerPage, totalItemsCount, currentPageNumber, setCurrentPageNumber}) => {
     const calculatePagesCount = () => {
-        return Math.ceil(props.totalItemsCount / props.itemsPerPage);
+        return Math.ceil(totalItemsCount / itemsPerPage);
     };
 
     const goToPage = pageNumber => {
-        props.setCurrentPageNumber(pageNumber);
+        setCurrentPageNumber(pageNumber);
     };
 
     const goToPreviousPage = () => {
-        if (props.currentPageNumber > 1) {
-            goToPage(props.currentPageNumber - 1);
+        if (currentPageNumber > 1) {
+            goToPage(currentPageNumber - 1);
         }
     };
 
     const goToNextPage = () => {
-        if (props.currentPageNumber < calculatePagesCount()) {
-            goToPage(props.currentPageNumber + 1);
+        if (currentPageNumber < calculatePagesCount()) {
+            goToPage(currentPageNumber + 1);
         }
     };
 
@@ -29,7 +29,7 @@ export default props => {
             items.push(
                 <Pagination.Item
                     key={pageNumber} onClick={() => goToPage(pageNumber)}
-                    active={pageNumber === props.currentPageNumber}
+                    active={pageNumber === currentPageNumber}
                 >
                     {pageNumber}
                 </Pagination.Item>
@@ -37,7 +37,7 @@ export default props => {
         }
 
         // Prevents empty page if last item on last page has been deleted.
-        if (pagesCount < props.currentPageNumber) {
+        if (pagesCount < currentPageNumber) {
             goToPreviousPage();
         }
 

@@ -1,15 +1,15 @@
 import React from 'react';
 import Dropdown from 'react-bootstrap/Dropdown';
 
-const DropdownButton = props => {
+const DropdownButton = ({callback, choices, id, label, size, variant}) => {
     return (
         <Dropdown>
-            <Dropdown.Toggle variant={props.variant} size={props.size} id={props.id}>{props.label}</Dropdown.Toggle>
+            <Dropdown.Toggle variant={variant} size={size} id={id}>{label}</Dropdown.Toggle>
 
             <Dropdown.Menu>
-                {props.choices.map(choice => {
+                {choices.map(choice => {
                     return (
-                        <Dropdown.Item key={choice} onClick={() => props.callback(choice)}>{choice}</Dropdown.Item>
+                        <Dropdown.Item key={choice} onClick={() => callback(choice)}>{choice}</Dropdown.Item>
                     );
                 })}
             </Dropdown.Menu>

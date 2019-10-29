@@ -2,9 +2,7 @@ import React, {useContext} from 'react';
 import DeleteButton from '../../reusable/DeleteButton';
 import CustomerListContext from './CustomerListContext';
 
-export default props => {
-    const customer = props.customer;
-
+export default ({customer}) => {
     const customerListContextValue = useContext(CustomerListContext);
 
     return (

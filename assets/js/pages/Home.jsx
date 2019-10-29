@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default (props) => {
+export default () => {
     return (
         <div className="jumbotron">
             <h1 className="display-3">Hello, world!</h1>

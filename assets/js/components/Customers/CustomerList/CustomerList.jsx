@@ -9,6 +9,7 @@ export default () => {
     const [stateCustomers, setStateCustomers] = useState([]);
     const [stateCustomersPerPage, setStateCustomersPerPage] = useState(5);
     const [stateCurrentPageNumber, setStateCurrentPageNumber] = useState(1);
+    const [stateIsLoading, setStateIsLoading] = useState(true);
     const [stateTotalCustomersCount, setStateTotalCustomersCount] = useState(0);
 
     /*
@@ -30,6 +31,7 @@ export default () => {
             .then(response => {
                 setStateCustomers(response.data['hydra:member']);
                 setStateTotalCustomersCount(response.data['hydra:totalItems']);
+                setStateIsLoading(false);
             })
             .catch(error => {
                 console.log(error)
@@ -39,6 +41,11 @@ export default () => {
     const updateCustomersPerPage = stateCustomersPerPage => {
         setStateCurrentPageNumber(1);
         setStateCustomersPerPage(stateCustomersPerPage);
+    };
+
+    const handlePageChange = pageNumber => {
+        setStateIsLoading(true);
+        setStateCurrentPageNumber(pageNumber);
     };
 
     const handleDelete = customerID => {
@@ -95,7 +102,12 @@ export default () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {stateCustomers.map(customer => {
+                    {stateIsLoading && (
+                        <tr>
+                            <td>Chargement...</td>
+                        </tr>
+                    )}
+                    {!stateIsLoading && stateCustomers.map(customer => {
                         return (
                             <CustomerItem
                                 key={customer.id} customer={customer}
@@ -106,7 +118,7 @@ export default () => {
             </table>
             <Paginator
                 itemsPerPage={stateCustomersPerPage} totalItemsCount={stateTotalCustomersCount}
-                currentPageNumber={stateCurrentPageNumber} setCurrentPageNumber={setStateCurrentPageNumber}
+                currentPageNumber={stateCurrentPageNumber} setCurrentPageNumber={handlePageChange}
             />
         </CustomerListContext.Provider>
     );

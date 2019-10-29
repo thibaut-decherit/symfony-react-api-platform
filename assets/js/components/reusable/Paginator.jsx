@@ -7,6 +7,10 @@ export default ({itemsPerPage, totalItemsCount, currentPageNumber, setCurrentPag
     };
 
     const goToPage = pageNumber => {
+        if (pageNumber === currentPageNumber) {
+            return;
+        }
+
         setCurrentPageNumber(pageNumber);
     };
 

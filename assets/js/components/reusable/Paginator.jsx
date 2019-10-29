@@ -23,8 +23,9 @@ export default props => {
     };
 
     const generatePaginationItems = () => {
+        const pagesCount = calculatePagesCount();
         let items = [];
-        for (let pageNumber = 1; pageNumber <= calculatePagesCount(); pageNumber++) {
+        for (let pageNumber = 1; pageNumber <= pagesCount; pageNumber++) {
             items.push(
                 <Pagination.Item
                     key={pageNumber} onClick={() => goToPage(pageNumber)}
@@ -33,6 +34,11 @@ export default props => {
                     {pageNumber}
                 </Pagination.Item>
             );
+        }
+
+        // Prevents empty page if last item on last page has been deleted.
+        if (pagesCount < props.currentPageNumber) {
+            goToPreviousPage();
         }
 
         return items;

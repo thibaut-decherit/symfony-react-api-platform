@@ -47,22 +47,24 @@ export default () => {
                 .delete('https://localhost:8000/api/customers/' + customerID)
                 .then(response => {
                     if (response.status < 300) {
-                        setStateCustomers(stateCustomers.filter(customer => customer.id !== customerID));
-
-                        if () {
-                            setStateCurrentPageNumber(1);
-                        }
+                        /*
+                         Will prevent empty page by refreshing the list and triggers a re-rendering of Paginator to
+                         update the pagination items if necessary.
+                         */
+                        getCustomerPage(stateCurrentPageNumber);
 
                         resolve();
                     } else {
                         console.error(
                             `Server responded with status code ${response.status}`
                         );
+
                         reject();
                     }
                 })
                 .catch(error => {
                     console.error(error.message);
+
                     reject();
                 })
         })

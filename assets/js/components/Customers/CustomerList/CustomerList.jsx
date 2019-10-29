@@ -48,6 +48,11 @@ export default () => {
                 .then(response => {
                     if (response.status < 300) {
                         setStateCustomers(stateCustomers.filter(customer => customer.id !== customerID));
+
+                        if () {
+                            setStateCurrentPageNumber(1);
+                        }
+
                         resolve();
                     } else {
                         console.error(

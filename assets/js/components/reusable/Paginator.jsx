@@ -2,26 +2,32 @@ import React from 'react';
 import Pagination from 'react-bootstrap/Pagination';
 
 export default props => {
-    const handleClick = pageNumber => {
+    const calculatePagesCount = () => {
+        return Math.ceil(props.totalItemsCount / props.itemsPerPage);
+    };
+
+    const goToPage = pageNumber => {
         props.setCurrentPageNumber(pageNumber);
     };
 
+    const goToPreviousPage = () => {
+        if (props.currentPageNumber > 1) {
+            goToPage(props.currentPageNumber - 1);
+        }
+    };
+
+    const goToNextPage = () => {
+        if (props.currentPageNumber < calculatePagesCount()) {
+            goToPage(props.currentPageNumber + 1);
+        }
+    };
+
     const generatePaginationItems = () => {
-        const calculatePagesCount = () => {
-            let count = props.totalItemsCount / props.itemsPerPage;
-
-            if (props.totalItemsCount % props.itemsPerPage !== 0) {
-                count++;
-            }
-
-            return count;
-        };
-
         let items = [];
         for (let pageNumber = 1; pageNumber <= calculatePagesCount(); pageNumber++) {
             items.push(
                 <Pagination.Item
-                    key={pageNumber} onClick={() => handleClick(pageNumber)}
+                    key={pageNumber} onClick={() => goToPage(pageNumber)}
                     active={pageNumber === props.currentPageNumber}
                 >
                     {pageNumber}
@@ -36,7 +42,11 @@ export default props => {
 
     if (items.length > 1) {
         return (
-            <Pagination className="d-flex justify-content-center" size="sm">{items}</Pagination>
+            <Pagination className="d-flex justify-content-center" size="sm">
+                <Pagination.Prev onClick={() => goToPreviousPage()}/>
+                {items}
+                <Pagination.Next onClick={() => goToNextPage()}/>
+            </Pagination>
         );
     } else {
         return null;

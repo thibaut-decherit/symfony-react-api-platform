@@ -1,5 +1,5 @@
 import React from 'react';
-import CustomerList from '../components/Customers/CustomerList/CustomerList';
+import CustomerList from './CustomerList';
 
 export default () => {
     return (

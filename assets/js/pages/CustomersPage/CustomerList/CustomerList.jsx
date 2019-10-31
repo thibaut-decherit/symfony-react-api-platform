@@ -1,8 +1,8 @@
 import axios from 'axios';
 import React, {useEffect, useState} from 'react';
-import DropdownButton from '../../reusable/DropdownButton';
-import Paginator from '../../reusable/Paginator';
-import SearchBar from '../../reusable/SearchBar';
+import DropdownButton from '../../../components/DropdownButton';
+import Paginator from '../../../components/Paginator';
+import SearchBar from '../../../components/SearchBar';
 import CustomerItem from './CustomerItem';
 import CustomerListContext from './CustomerListContext';
 
@@ -116,7 +116,7 @@ export default () => {
                     )}
                     {!stateIsLoading && stateCustomers.length === 0 && (
                         <tr>
-                            <td>No result</td>
+                            <td>No results</td>
                         </tr>
                     )}
                     {!stateIsLoading && stateCustomers.map(customer => {

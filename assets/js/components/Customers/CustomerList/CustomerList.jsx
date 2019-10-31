@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import DropdownButton from '../../reusable/DropdownButton';
 import Paginator from '../../reusable/Paginator';
+import SearchBar from '../../reusable/SearchBar';
 import CustomerItem from './CustomerItem';
 import CustomerListContext from './CustomerListContext';
 
@@ -22,12 +23,12 @@ export default () => {
      See https://reactjs.org/docs/hooks-effect.html
      */
     useEffect(() => {
-        getCustomerPage(stateCurrentPageNumber);
+        getCustomerPage();
     }, [stateCurrentPageNumber, stateCustomersPerPage]);
 
-    const getCustomerPage = stateCurrentPageNumber => {
+    const getCustomerPage = (searchValue = '') => {
         axios
-            .get(`https://localhost:8000/api/customers?pagination=true&itemsPerPage=${stateCustomersPerPage}&page=${stateCurrentPageNumber}`)
+            .get(`https://localhost:8000/api/customers?pagination=true&itemsPerPage=${stateCustomersPerPage}&page=${stateCurrentPageNumber}&nameOrCompanyStartsBy=${searchValue}`)
             .then(response => {
                 setStateCustomers(response.data['hydra:member']);
                 setStateTotalCustomersCount(response.data['hydra:totalItems']);
@@ -58,7 +59,7 @@ export default () => {
                          Will prevent empty page by refreshing the list and triggers a re-rendering of Paginator to
                          update the pagination items if necessary.
                          */
-                        getCustomerPage(stateCurrentPageNumber);
+                        getCustomerPage();
 
                         resolve();
                     } else {
@@ -77,12 +78,18 @@ export default () => {
         })
     };
 
+    const handleSearchSubmit = searchValue => {
+        setStateIsLoading(true);
+        getCustomerPage(searchValue);
+    };
+
     const customerListContextValue = {
         handleDelete: handleDelete
     };
 
     return (
         <CustomerListContext.Provider value={customerListContextValue}>
+            <SearchBar onSubmit={handleSearchSubmit} placeholder="Search by first name, last name or company"/>
             <table className="table table-hover">
                 <thead>
                     <tr>
@@ -104,7 +111,12 @@ export default () => {
                 <tbody>
                     {stateIsLoading && (
                         <tr>
-                            <td>Chargement...</td>
+                            <td>Loading</td>
+                        </tr>
+                    )}
+                    {!stateIsLoading && stateCustomers.length === 0 && (
+                        <tr>
+                            <td>No result</td>
                         </tr>
                     )}
                     {!stateIsLoading && stateCustomers.map(customer => {

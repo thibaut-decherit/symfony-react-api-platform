@@ -17,8 +17,6 @@ const DropdownButton = ({callback, choices, id, label, size, variant}) => {
     );
 };
 
-export default DropdownButton;
-
 DropdownButton.defaultProps = {
     callback: () => {
         console.error(
@@ -35,3 +33,5 @@ DropdownButton.defaultProps = {
     size: 'sm',
     variant: 'primary'
 };
+
+export default DropdownButton;

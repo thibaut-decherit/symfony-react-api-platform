@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Filter\CustomerNameOrCompanyFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -22,6 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ApiFilter(SearchFilter::class, properties={"firstName": "start", "lastName": "start", "company": "start"})
  * @ApiFilter(OrderFilter::class)
+ * @ApiFilter(CustomerNameOrCompanyFilter::class, strategy="start"))
  */
 class Customer
 {

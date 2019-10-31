@@ -1,16 +1,18 @@
-import axios from 'axios';
 import React, {useEffect, useState} from 'react';
 import DropdownButton from '../../../components/DropdownButton';
 import Paginator from '../../../components/Paginator';
 import SearchBar from '../../../components/SearchBar';
+import CustomerAPIService from '../../../services/APIService/CustomerAPIService';
 import CustomerItem from './CustomerItem';
 import CustomerListContext from './CustomerListContext';
 
 export default () => {
+    const [stateCurrentPageNumber, setStateCurrentPageNumber] = useState(1);
     const [stateCustomers, setStateCustomers] = useState([]);
     const [stateCustomersPerPage, setStateCustomersPerPage] = useState(5);
-    const [stateCurrentPageNumber, setStateCurrentPageNumber] = useState(1);
+    const [stateError, setStateError] = useState(false);
     const [stateIsLoading, setStateIsLoading] = useState(true);
+    const [stateSearchValue, setStateSearchValue] = useState('');
     const [stateTotalCustomersCount, setStateTotalCustomersCount] = useState(0);
 
     /*
@@ -24,18 +26,32 @@ export default () => {
      */
     useEffect(() => {
         getCustomerPage();
-    }, [stateCurrentPageNumber, stateCustomersPerPage]);
+    }, [stateCurrentPageNumber, stateCustomersPerPage, stateSearchValue]);
 
-    const getCustomerPage = (searchValue = '') => {
-        axios
-            .get(`https://localhost:8000/api/customers?pagination=true&itemsPerPage=${stateCustomersPerPage}&page=${stateCurrentPageNumber}&nameOrCompanyStartsBy=${searchValue}`)
+    const getCustomerPage = () => {
+        setStateError(false);
+        setStateIsLoading(true);
+
+        CustomerAPIService.paginatedFindByNameOrCompanyStartsBy(
+            stateCustomersPerPage,
+            stateCurrentPageNumber,
+            stateSearchValue
+        )
             .then(response => {
-                setStateCustomers(response.data['hydra:member']);
-                setStateTotalCustomersCount(response.data['hydra:totalItems']);
-                setStateIsLoading(false);
+                setStateCustomers(response.results);
+                setStateTotalCustomersCount(response.totalItemsCount);
             })
             .catch(error => {
-                console.log(error)
+                setStateTotalCustomersCount(0);
+
+                if (error.message === 'Network Error') {
+                    setStateError('Network error');
+                } else {
+                    setStateError('Something went wrong');
+                }
+            })
+            .finally(() => {
+                setStateIsLoading(false);
             })
     };
 
@@ -45,42 +61,29 @@ export default () => {
     };
 
     const handlePageChange = pageNumber => {
-        setStateIsLoading(true);
         setStateCurrentPageNumber(pageNumber);
     };
 
     const handleDelete = customerID => {
         return new Promise((resolve, reject) => {
-            axios
-                .delete('https://localhost:8000/api/customers/' + customerID)
-                .then(response => {
-                    if (response.status < 300) {
-                        /*
-                         Will prevent empty page by refreshing the list and triggers a re-rendering of Paginator to
-                         update the pagination items if necessary.
-                         */
-                        getCustomerPage();
+            CustomerAPIService.deleteOneById(customerID)
+                .then(() => {
+                    /*
+                     Will prevent empty page by refreshing the list and triggers a re-rendering of Paginator to
+                     update the pagination items if necessary.
+                     */
+                    getCustomerPage();
 
-                        resolve();
-                    } else {
-                        console.error(
-                            `Server responded with status code ${response.status}`
-                        );
-
-                        reject();
-                    }
+                    resolve();
                 })
-                .catch(error => {
-                    console.error(error.message);
-
+                .catch(() => {
                     reject();
                 })
         })
     };
 
     const handleSearchSubmit = searchValue => {
-        setStateIsLoading(true);
-        getCustomerPage(searchValue);
+        setStateSearchValue(searchValue);
     };
 
     const customerListContextValue = {
@@ -109,12 +112,22 @@ export default () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {stateIsLoading && (
+                    {stateError && (
                         <tr>
-                            <td>Loading</td>
+                            <td>{stateError}</td>
                         </tr>
                     )}
-                    {!stateIsLoading && stateCustomers.length === 0 && (
+                    {stateIsLoading && (
+                        <tr>
+                            <td>Loading...</td>
+                        </tr>
+                    )}
+                    {!stateIsLoading && !stateError && stateCustomers.length === 0 && stateSearchValue !== '' && (
+                        <tr>
+                            <td>No results for "{stateSearchValue}"</td>
+                        </tr>
+                    )}
+                    {!stateIsLoading && !stateError && stateCustomers.length === 0 && stateSearchValue === '' && (
                         <tr>
                             <td>No results</td>
                         </tr>

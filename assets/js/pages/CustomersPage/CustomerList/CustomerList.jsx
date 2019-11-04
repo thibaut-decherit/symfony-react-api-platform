@@ -117,17 +117,22 @@ export default () => {
                             <td>{stateError}</td>
                         </tr>
                     )}
-                    {stateIsLoading && (
+                    {/*
+                    If stateCustomers.length === 0 && stateTotalCustomersCount !== 0 it means that the API has results
+                    but getCustomerPage() has not had the time to update stateCustomers yet, so we assume the data is
+                    still loading.
+                     */}
+                    {(stateIsLoading || stateCustomers.length === 0) && stateTotalCustomersCount !== 0 && (
                         <tr>
                             <td>Loading...</td>
                         </tr>
                     )}
-                    {!stateIsLoading && !stateError && stateCustomers.length === 0 && stateSearchValue !== '' && (
+                    {!stateIsLoading && !stateError && stateTotalCustomersCount === 0 && stateSearchValue !== '' && (
                         <tr>
                             <td>No results for "{stateSearchValue}"</td>
                         </tr>
                     )}
-                    {!stateIsLoading && !stateError && stateCustomers.length === 0 && stateSearchValue === '' && (
+                    {!stateIsLoading && !stateError && stateTotalCustomersCount === 0 && stateSearchValue === '' && (
                         <tr>
                             <td>No results</td>
                         </tr>

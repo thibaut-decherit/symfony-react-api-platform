@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * )
  * @ApiFilter(SearchFilter::class, properties={"firstName": "start", "lastName": "start", "company": "start"})
  * @ApiFilter(OrderFilter::class)
- * @ApiFilter(CustomerNameOrCompanyFilter::class, strategy="start"))
+ * @ApiFilter(CustomerNameOrCompanyFilter::class, strategy="start")
  */
 class Customer
 {

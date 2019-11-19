@@ -8,8 +8,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * Class KernelViewSubscriber
- * @package App\EventSubscriber
+ * Class JWTCreatedListener
+ * @package App\EventListener
  */
 class JWTCreatedListener
 {

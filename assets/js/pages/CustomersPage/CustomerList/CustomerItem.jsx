@@ -18,6 +18,7 @@ export default ({customer}) => {
             <td>{customer.paidAmount.toLocaleString()} €</td>
             <td>
                 <DeleteButton
+                    disabled={customer.invoices.length > 0}
                     handleDelete={() => customerListContextValue.handleDelete(customer.id)}
                 />
             </td>

@@ -4,7 +4,7 @@ import Paginator from '../../../components/Paginator';
 import SearchBar from '../../../components/SearchBar';
 import CustomerAPIService from '../../../services/APIService/CustomerAPIService';
 import CustomerItem from './CustomerItem';
-import CustomerListContext from './CustomerListContext';
+import CustomersListContext from './CustomersListContext';
 
 export default () => {
     const [stateCurrentPageNumber, setStateCurrentPageNumber] = useState(1);
@@ -25,10 +25,10 @@ export default () => {
      See https://reactjs.org/docs/hooks-effect.html
      */
     useEffect(() => {
-        getCustomerPage();
+        getCustomersPage();
     }, [stateCurrentPageNumber, stateCustomersPerPage, stateSearchValue]);
 
-    const getCustomerPage = () => {
+    const getCustomersPage = () => {
         setStateError(false);
         setStateIsLoading(true);
 
@@ -72,7 +72,7 @@ export default () => {
                      Will prevent empty page by refreshing the list and triggers a re-rendering of Paginator to
                      update the pagination items if necessary.
                      */
-                    getCustomerPage();
+                    getCustomersPage();
 
                     resolve();
                 })
@@ -86,12 +86,12 @@ export default () => {
         setStateSearchValue(searchValue);
     };
 
-    const customerListContextValue = {
+    const customersListContextValue = {
         handleDelete: handleDelete
     };
 
     return (
-        <CustomerListContext.Provider value={customerListContextValue}>
+        <CustomersListContext.Provider value={customersListContextValue}>
             <SearchBar onSubmit={handleSearchSubmit} placeholder="Search by first name, last name or company"/>
             <table className="table table-hover">
                 <thead>
@@ -119,7 +119,7 @@ export default () => {
                     )}
                     {/*
                     If stateCustomers.length === 0 && stateTotalCustomersCount !== 0 it means that the API has results
-                    but getCustomerPage() has not had the time to update stateCustomers yet, so we assume the data is
+                    but getCustomersPage() has not had the time to update stateCustomers yet, so we assume the data is
                     still loading.
                      */}
                     {(stateIsLoading || stateCustomers.length === 0) && stateTotalCustomersCount !== 0 && (
@@ -150,6 +150,6 @@ export default () => {
                 itemsPerPage={stateCustomersPerPage} totalItemsCount={stateTotalCustomersCount}
                 currentPageNumber={stateCurrentPageNumber} setCurrentPageNumber={handlePageChange}
             />
-        </CustomerListContext.Provider>
+        </CustomersListContext.Provider>
     );
 };

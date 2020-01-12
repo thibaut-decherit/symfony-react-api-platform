@@ -1,9 +1,9 @@
 import React, {useContext} from 'react';
 import DeleteButton from '../../../components/DeleteButton';
-import CustomerListContext from './CustomerListContext';
+import CustomersListContext from './CustomersListContext';
 
 export default ({customer}) => {
-    const customerListContextValue = useContext(CustomerListContext);
+    const customersListContextValue = useContext(CustomersListContext);
 
     return (
         <tr>
@@ -11,7 +11,9 @@ export default ({customer}) => {
             <td>
                 <a href="#">{customer.firstName + ' ' + customer.lastName}</a>
             </td>
-            <td>{customer.email}</td>
+            <td>
+                <a href={`mailto:${customer.email}`}>{customer.email}</a>
+            </td>
             <td>{customer.company || 'n/a'}</td>
             <td>{customer.invoices.length}</td>
             <td>{customer.unpaidAmount.toLocaleString()} €</td>
@@ -19,7 +21,7 @@ export default ({customer}) => {
             <td>
                 <DeleteButton
                     disabled={customer.invoices.length > 0}
-                    handleDelete={() => customerListContextValue.handleDelete(customer.id)}
+                    handleDelete={() => customersListContextValue.handleDelete(customer.id)}
                 />
             </td>
         </tr>

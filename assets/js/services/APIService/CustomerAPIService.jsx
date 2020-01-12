@@ -1,7 +1,11 @@
 import axios from 'axios';
 
 export default class CustomerAPIService {
-    static paginatedFindByNameOrCompanyStartsBy(itemsPerPage = 5, pageNumber = 1, searchValue = '') {
+    static paginatedFindByNameOrCompanyStartsBy(
+        itemsPerPage = 5,
+        pageNumber = 1,
+        searchValue = ''
+    ) {
         let url =
             'https://localhost:8000/api/customers' +
             '?pagination=true' +

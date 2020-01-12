@@ -1,11 +1,11 @@
 import React from 'react';
-import CustomerList from './CustomerList';
+import CustomersList from './CustomersList';
 
 export default () => {
     return (
         <div>
             <h1>Clients</h1>
-            <CustomerList/>
+            <CustomersList/>
         </div>
     );
 };

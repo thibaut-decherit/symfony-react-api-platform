@@ -64,7 +64,7 @@ const DeleteButton = ({handleDelete, variant, size, disabled}) => {
         };
 
         return (
-            <div>
+            <div className="delete-button-confirmation-buttons-group">
                 <Button
                     onClick={() => handleDeleteButtonClick()} variant="success" className="w-50"
                     aria-label="Confirm deletion"

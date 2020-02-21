@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 export default class InvoiceAPIService {
-    // TODO: Rework search value (here and back-end)
     static paginatedFindByNameOrCompanyStartsBy(
         itemsPerPage = 5,
         pageNumber = 1,

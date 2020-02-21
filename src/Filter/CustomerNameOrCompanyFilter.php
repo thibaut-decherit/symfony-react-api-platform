@@ -4,6 +4,7 @@ namespace App\Filter;
 
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\AbstractContextAwareFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use App\Entity\Invoice;
 use Doctrine\ORM\QueryBuilder;
 
 /**
@@ -35,14 +36,23 @@ class CustomerNameOrCompanyFilter extends AbstractContextAwareFilter
 
         $sanitizedValue = addcslashes($value, '\\%_');
 
-        $rootAlias = $queryBuilder->getRootAliases()[0];
+        $queryAlias = $queryBuilder->getRootAliases()[0];
 
         // Generates a unique parameter name to avoid collisions with other filters.
         $parameterName = $queryNameGenerator->generateParameterName($property);
+
+        // IF requested entity is Invoice and not Customer, add relation support to query builder.
+        if ($resourceClass === Invoice::class) {
+            $queryBuilder
+                ->join("$queryAlias.customer", 'invoiceCustomer');
+
+            $queryAlias = 'invoiceCustomer';
+        }
+
         $queryBuilder
-            ->andWhere("$rootAlias.firstName LIKE :$parameterName")
-            ->orWhere("$rootAlias.lastName LIKE :$parameterName")
-            ->orWhere("$rootAlias.company LIKE :$parameterName")
+            ->andWhere("$queryAlias.firstName LIKE :$parameterName")
+            ->orWhere("$queryAlias.lastName LIKE :$parameterName")
+            ->orWhere("$queryAlias.company LIKE :$parameterName")
             ->setParameter($parameterName, "$sanitizedValue%");
     }
 

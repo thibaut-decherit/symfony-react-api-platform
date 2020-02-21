@@ -21,7 +21,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "groups"={"customer_read"}
  *     }
  * )
- * @ApiFilter(SearchFilter::class, properties={"firstName": "start", "lastName": "start", "company": "start"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "firstName": "start",
+ *     "lastName": "start",
+ *     "company": "start"
+ * })
  * @ApiFilter(OrderFilter::class)
  * @ApiFilter(CustomerNameOrCompanyFilter::class, strategy="start")
  */

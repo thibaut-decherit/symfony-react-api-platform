@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Filter\CustomerNameOrCompanyFilter;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups as SerializerGroups;
@@ -30,8 +31,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          }
  *     }
  * )
- * @ApiFilter(SearchFilter::class, properties={"customer.firstName": "start", "customer.lastName": "start"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "customer.firstName": "start",
+ *     "customer.lastName": "start",
+ *     "customer.company": "start"
+ * })
  * @ApiFilter(OrderFilter::class, properties={"amount", "sentAt"})
+ * @ApiFilter(CustomerNameOrCompanyFilter::class, strategy="start")
  */
 class Invoice
 {
@@ -168,6 +174,7 @@ class Invoice
     }
 
     /**
+     * @SerializerGroups({"invoice_read", "invoice_read_as_subresource"})
      * @return Customer|null
      */
     public function getCustomer(): ?Customer

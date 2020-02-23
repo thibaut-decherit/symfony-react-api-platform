@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Filter\CustomerNameOrCompanyFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,8 +21,13 @@ use Symfony\Component\Validator\Constraints as Assert;
  *          "groups"={"customer_read"}
  *     }
  * )
- * @ApiFilter(SearchFilter::class, properties={"firstName": "start", "lastName": "start", "company": "start"})
+ * @ApiFilter(SearchFilter::class, properties={
+ *     "firstName": "start",
+ *     "lastName": "start",
+ *     "company": "start"
+ * })
  * @ApiFilter(OrderFilter::class)
+ * @ApiFilter(CustomerNameOrCompanyFilter::class, strategy="start")
  */
 class Customer
 {
@@ -125,16 +131,18 @@ class Customer
      */
     public function getPaidAmount(): float
     {
-        return array_reduce(
-            $this->invoices->toArray(),
-            function (float $total, Invoice $invoice): float {
-                if ($invoice->getStatus() === 'PAID') {
-                    $total += $invoice->getAmount();
-                }
+        return round(
+            array_reduce(
+                $this->invoices->toArray(),
+                function (float $total, Invoice $invoice): float {
+                    if ($invoice->getStatus() === 'PAID') {
+                        $total += $invoice->getAmount();
+                    }
 
-                return $total;
-            }, 0
-        );
+                    return $total;
+                }, 0
+            ),
+            2);
     }
 
     /**
@@ -143,12 +151,14 @@ class Customer
      */
     public function getTotalAmount(): float
     {
-        return array_reduce(
-            $this->invoices->toArray(),
-            function (float $total, Invoice $invoice): float {
-                return $total + $invoice->getAmount();
-            }, 0
-        );
+        return round(
+            array_reduce(
+                $this->invoices->toArray(),
+                function (float $total, Invoice $invoice): float {
+                    return $total + $invoice->getAmount();
+                }, 0
+            ),
+            2);
     }
 
     /**
@@ -157,16 +167,18 @@ class Customer
      */
     public function getUnpaidAmount(): float
     {
-        return array_reduce(
-            $this->invoices->toArray(),
-            function (float $total, Invoice $invoice): float {
-                if ($invoice->getStatus() === 'SENT') {
-                    $total += $invoice->getAmount();
-                }
+        return round(
+            array_reduce(
+                $this->invoices->toArray(),
+                function (float $total, Invoice $invoice): float {
+                    if ($invoice->getStatus() === 'SENT') {
+                        $total += $invoice->getAmount();
+                    }
 
-                return $total;
-            }, 0
-        );
+                    return $total;
+                }, 0
+            ),
+            2);
     }
 
     /**

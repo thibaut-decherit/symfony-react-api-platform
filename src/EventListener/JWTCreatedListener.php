@@ -39,7 +39,6 @@ class JWTCreatedListener
      */
     public function onJWTCreated(JWTCreatedEvent $event): void
     {
-        $request = $this->requestStack->getCurrentRequest();
         /**
          * @var User $user
          */

@@ -18,7 +18,7 @@ export default () => {
                     <Button variant="primary">
                         Register
                     </Button>
-                    <Button variant="secondary">
+                    <Button variant="secondary" href="#login">
                         Login
                     </Button>
                     <Button variant="secondary">

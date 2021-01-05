@@ -25,7 +25,7 @@
     "author": "Thibaut Decherit <thibaut.decherit@protonmail.com>",
     "dependencies": {
         "@babel/core": "^7.0.0-0",
-        "axios": "0.18.1",
+        "axios": "0.21.1",
         "bootstrap": "^4.3.1",
         "moment": "^2.24.0",
         "react": "16.8.6",

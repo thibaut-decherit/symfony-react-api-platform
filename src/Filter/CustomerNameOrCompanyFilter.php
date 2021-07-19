@@ -50,7 +50,7 @@ class CustomerNameOrCompanyFilter extends AbstractContextAwareFilter
         }
 
         $queryBuilder
-            ->andWhere("$queryAlias.firstName LIKE :$parameterName")
+            ->orWhere("$queryAlias.firstName LIKE :$parameterName")
             ->orWhere("$queryAlias.lastName LIKE :$parameterName")
             ->orWhere("$queryAlias.company LIKE :$parameterName")
             ->setParameter($parameterName, "$sanitizedValue%");

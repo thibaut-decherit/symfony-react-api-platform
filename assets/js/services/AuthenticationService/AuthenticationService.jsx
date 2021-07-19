@@ -1,6 +1,5 @@
-import moment from 'moment';
 import React from 'react';
-import AuthenticationAPIService from '../APIService/AuthenticationAPIService'
+import AuthenticationAPIService from '../APIService/AuthenticationAPIService';
 
 export default class AuthenticationService {
     static login(credentials) {

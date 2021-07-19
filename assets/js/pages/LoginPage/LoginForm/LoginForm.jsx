@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import AuthenticationService from '../../../services/AuthenticationService'
+import LodashHelper from '../../../helpers/LodashHelper';
+import AuthenticationService from '../../../services/AuthenticationService';
 
 export default () => {
     const initialStateCredentials = {
@@ -10,8 +11,8 @@ export default () => {
         password: ''
     };
     const [stateCredentials, setStateCredentials] = useState(initialStateCredentials);
-    const initialStateGlobalFormErrorMessage = '';
-    const [stateGlobalFormErrorMessage, setStateGlobalFormErrorMessage] = useState(initialStateGlobalFormErrorMessage);
+    const initialStateGlobalFormAlert = {};
+    const [stateGlobalFormAlert, setStateGlobalFormAlert] = useState(initialStateGlobalFormAlert);
 
     const handleChange = event => {
         const name = event.currentTarget.name;
@@ -23,7 +24,7 @@ export default () => {
     const handleSubmit = async event => {
         event.preventDefault();
 
-        setStateGlobalFormErrorMessage(initialStateGlobalFormErrorMessage);
+        setStateGlobalFormAlert(initialStateGlobalFormAlert);
 
         let loginResponse;
         try {
@@ -34,39 +35,42 @@ export default () => {
 
         switch (loginResponse) {
             case 'success':
-                // TODO: handle success
+                setStateGlobalFormAlert({variant: 'success', message: 'Welcome'});
                 break;
             case 'bad credentials':
-                setStateGlobalFormErrorMessage('Wrong email or password');
+                setStateGlobalFormAlert({variant: 'danger', message: 'Wrong email or password'});
                 break;
             case 'network error':
-                setStateGlobalFormErrorMessage('Network Error');
+                setStateGlobalFormAlert({variant: 'danger', message: 'Network Error'});
                 break;
             default:
-                setStateGlobalFormErrorMessage('Something went wrong');
+                setStateGlobalFormAlert({variant: 'danger', message: 'Something went wrong'});
         }
+
+        setStateCredentials({...stateCredentials, password: ''});
     };
 
     return (
         <>
-            {stateGlobalFormErrorMessage !== initialStateGlobalFormErrorMessage && (
-                <Alert variant="danger" className="text-center">
-                    {stateGlobalFormErrorMessage}
+            {LodashHelper.hasAll(stateGlobalFormAlert, ['variant', 'message']) && (
+                <Alert variant={stateGlobalFormAlert.variant} className="text-center">
+                    {stateGlobalFormAlert.message}
                 </Alert>
             )}
 
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="email-field">
                     <Form.Label>Email address</Form.Label>
-                    <Form.Control required type="email" name="username" value={stateCredentials.username}
-                                  onChange={handleChange}
+                    <Form.Control
+                        required type="email" name="username" value={stateCredentials.username} onChange={handleChange}
                     />
                 </Form.Group>
 
                 <Form.Group controlId="password-field">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control required type="password" name="password" value={stateCredentials.password}
-                                  onChange={handleChange}
+                    <Form.Control
+                        required type="password" name="password" value={stateCredentials.password}
+                        onChange={handleChange}
                     />
                 </Form.Group>
 
